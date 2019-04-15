@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+
+		<title>LeoRover</title>
+
+		<meta name="application-name" content="LeoRover UI">
+		<meta name="apple-mobile-web-app-title" content="LeoRover UI">
+
+		<meta name="theme-color" content="#000000">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+
+		<!-- icons -->
+		<link rel="shortcut icon" href="./img/LEO/logo.jpg">
+		<link rel="apple-touch-icon-precomposed" href="./img/LEO/logo.jpg">
+		<link rel="manifest" href="./manifest.webmanifest">
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/bootstrap-slider.css" />
+
+		<script src="./js/jquery.js"></script>
+		<script src="./js/bootstrap.js"></script>
+		<script src="./js/leo.js"></script>
+		<script src="./js/fullscreen.js"></script>
+		<script src="./js/system.js"></script>
+		<script src="./js/bootstrap-slider.js"></script>
+		<script src="./js/nipplejs.js"></script>
+		<script src="./js/roslib.min.js"></script>
+		<script src="./js/servoblock.js"></script>
+
+	
+
+	</head>
+
+	<body class="bg-custom">
+
+
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+		<div class="container-fluid">
+			
+			<a class="col-5 navbar-brand" href="#">
+				<img class="rounded" src="./img/logoLeo.png" alt="Logo" style="width: 70px; height: 40px;"/>
+			</a>
+
+			<div class="col-2 text-center">
+				<button class="bg-dark btn-sm mx-auto" style="width: 45px; height: 45px;" type="button" onclick="openFullscreen()">
+					<img class="rounded img-fluid" src="img/nav-bar-fullscreen.svg" alt="FullScreen" style="width: 25px; height: 25px;"/>
+				</button>
+			</div>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="col-5 collapse navbar-collapse ml-auto" id="collapsibleNavbar">
+				<ul class="navbar-nav ml-auto">
+				<li class="nav-item ml-auto">
+					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()">Reboot system</button>
+				</li>
+				<li class="nav-item ml-auto">
+					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="streamReboot()">Reboot stream</button>
+				</li>
+				<li class="nav-item ml-auto">
+					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 ml-3" onclick="turnOff()">Turn off</button>
+				</li>
+				</ul>
+			</div>
+		</div>
+	</nav> 
+
+
+	
+
+	<div class="row md-6 fixed-bottom">
+
+		<div class="col my-2 d-none d-md-block">
+			<div id="servoB" class=" rounded mr-auto bg-servo" style=" width: 310px; height: 210px;" >
+
+				<div class="row">
+					<div class="col-md-2 ml-4 mt-2">
+						<label for="lin-slider">
+							<strong class="text-light">Servo1</strong>
+						</label>
+						<input id="s1-slider" type="text"/>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-2 ml-4">
+						<label for="lin-slider">
+							<strong class="text-light">Servo2</strong>
+						</label>
+						<input id="s2-slider" type="text"/>
+					</div>
+				</div>
+				
+				<div class="row center ml-4">
+					<div class="col-md-2">
+						<label for="lin-slider">
+							<strong class="text-light">Servo3</strong>
+						</label>
+						<input id="s3-slider" type="text"/>
+					</div>	
+				</div>
+			</div>
+		</div>
+
+		<div class="row my-2 align-self-end mr-auto d-none d-md-block">
+				<button id="servoBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="servoHide()">Servo disable</button>
+		</div>
+
+		<div class="col my-2 d-flex" style="height: 210px;">
+				<div id="joystick"></div>
+		</div>
+
+	</div>
+
+
+
+	<div class="justify-content-center" style="margin-top: -70px; min-width: 100%; min-height: 100%; ">
+		<img src="" class="p-1 center-fit rotate" alt="" id="video" style="background-size: cover"></img>
+	<div>
+
+
+
+	
+	</body>
+
+</html>
