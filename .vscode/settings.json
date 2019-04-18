@@ -1,0 +1,5 @@
+{
+    "python.jediEnabled": false,
+    "liveServer.settings.port": 4600,
+    "easysass.targetDir": "css",
+}

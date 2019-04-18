@@ -1,0 +1,74 @@
+.icon-bar {
+    width: 90px; /* Set a specific width */
+    background-color: red; /* Dark-grey background */
+  }
+
+  .custom-btn {
+    width: 78px !important;
+    height: 50px !important;
+}
+
+  .marg-right{
+    float: right;
+}
+
+.bg-custom {
+  background-color: #181818 !important;
+}
+
+
+.mr-10 {
+  margin-right: 6rem !important;
+}
+
+.mb-6 {
+  margin-bottom: 6rem !important;
+}
+
+.clear {
+  clear:both;
+}
+
+.slider-selection {
+	background: #BABABA;
+}
+
+.slider.slider-horizontal {
+	width: 100%
+}
+
+.row {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.slider.slider-horizontal .tooltip.tooltip-main.in,
+.slider.slider-vertical .tooltip.tooltip-main.in { opacity: 1 !important; }
+
+
+.center-fit {
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100vh !important;
+  margin: auto !important;
+}
+
+body {
+  background: #181818;
+  background-image: radial-gradient(#333333 5%, transparent 0);
+  background-size: 30px 30px;
+  font-family: 'roboto_mediumregular';
+  font-size: 14px;
+}
+
+.bg-servo {
+  background: #00000079;
+  background-image: radial-gradient(#333333 10%, transparent 0);
+  background-size: 30px 30px;
+}
+
+.rotate {
+  transform: rotate(180deg);
+  z-index:-1;
+}
