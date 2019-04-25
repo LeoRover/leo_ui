@@ -125,7 +125,7 @@ function createJoystick() {
             var lin = Math.sin(nipple.angle.radian) * nipple.distance * 0.01;
             var ang = -Math.cos(nipple.angle.radian) * nipple.distance * 0.01;
 
-            twist.linear.x = lin * 1;
+            twist.linear.x = lin * 0.5;
             twist.angular.z = ang * 1;
         });
 
