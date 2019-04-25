@@ -136,6 +136,36 @@ function createJoystick() {
     }
 }
 
+function initTeleopKeyboard() {
+    var body = document.getElementsByTagName('body')[0];
+    body.addEventListener('keydown', function(e) {
+        switch(e.keyCode) {
+            case 37: //left
+                twist.angular.z = 0.5;
+                break;
+            case 39: //right
+                twist.angular.z = -0.5;
+                break;
+            case 38: ///up
+                twist.linear.x = 0.4;
+                break;
+            case 40: //down
+                twist.linear.x = -0.4;
+        }
+    });
+    body.addEventListener('keyup', function(e) {
+        switch(e.keyCode) {
+            case 37: //left
+            case 39: //right
+                twist.angular.z = 0;
+                break;
+            case 38: ///up
+            case 40: //down
+                twist.linear.x = 0;
+        }
+    });
+}
+
 function publishTwist() {
     cmdVelPub.publish(twist)
 }
@@ -179,11 +209,13 @@ window.onload = function () {
 
     initROS();
     initSliders();
-    //initTeleopKeyboard();
+    initTeleopKeyboard();
     createJoystick();
 
     video = document.getElementById('video');
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=/usb_cam/image_raw&type=ros_compressed&quality=80";
+    //USB_cam node
+    //video.src = "http://" + robot_hostname + ":8080/stream?topic=/usb_cam/image_raw&type=ros_compressed&quality=80";
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=/raspicam_node/image&type=ros_compressed";
     console.log(robot_hostname);
     
     twistIntervalID = setInterval(() => publishTwist(), 50);
