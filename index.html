@@ -45,9 +45,13 @@
 	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
 		<div class="container-fluid">
 			
-			<a class="col-5 navbar-brand" href="#">
+			<div class="col-2 navbar-brand" href="#">
 				<img class="rounded" src="./img/logoLeo.png" alt="Logo" style="width: 70px; height: 40px;"/>
-			</a>
+			</div>
+
+			<div class="col-3" >
+				<div id="batteryID" class="bg-dark center-fit" style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
+			</div>
 
 			<div class="col-2 text-center">
 				<button class="bg-dark btn-sm mx-auto" style="width: 45px; height: 45px;" type="button" onclick="fullScreen()">
@@ -64,9 +68,9 @@
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()">Reboot system</button>
 				</li>
-				<li class="nav-item ml-auto">
+				<!-- <li class="nav-item ml-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="streamReboot()">Reboot stream</button>
-				</li>
+				</li> -->
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 ml-3" onclick="turnOff()">Turn off</button>
 				</li>

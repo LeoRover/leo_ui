@@ -12,11 +12,12 @@ var servoVal3;
 var twistIntervalID;
 var servoIntervalID;
 var robot_hostname;
+var batterySub;
 
 function initROS() {
 
-    //robot_hostname = location.hostname;
-    robot_hostname="192.168.4.135";
+    robot_hostname = location.hostname;
+    //robot_hostname="host_IP";
 
     ros = new ROSLIB.Ros({
         url: "ws://" + robot_hostname + ":9090"
@@ -80,6 +81,12 @@ function initROS() {
         messageType: 'std_msgs/Empty'
     });
     systemShutdownPub.advertise();
+
+    batterySub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/battery',
+        messageType : 'std_msgs/Float32'
+    });
 
 }
 
@@ -182,6 +189,15 @@ function initTeleopKeyboard() {
     });
 }
 
+
+function subscribeBattery() {
+    batterySub.subscribe(function(message) {
+    console.log('Voltage: ' + message.data);
+    document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data;
+    });
+}
+
+
 function publishTwist() {
     cmdVelPub.publish(twist)
 }
@@ -232,6 +248,7 @@ function shutdown() {
     servoPub3.unadvertise();
     systemRebootPub.unadvertise();
     systemShutdownPub.unadvertise();
+    batterySub.unsubscribe();
     ros.close();
 }
 
@@ -251,6 +268,8 @@ window.onload = function () {
     twistIntervalID = setInterval(() => publishTwist(), 50);
 
     servoIntervalID = setInterval(() => publishServos(), 50);
+
+    batteryIntervalID = setInterval(() => subscribeBattery(), 100);
 
     window.addEventListener("beforeunload", () => shutdown());
 }
