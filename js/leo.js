@@ -15,7 +15,8 @@ var robot_hostname;
 
 function initROS() {
 
-    robot_hostname = location.hostname;
+    //robot_hostname = location.hostname;
+    robot_hostname="192.168.4.135";
 
     ros = new ROSLIB.Ros({
         url: "ws://" + robot_hostname + ":9090"
@@ -65,6 +66,21 @@ function initROS() {
     servoPub1.advertise();
     servoPub2.advertise();
     servoPub3.advertise();
+
+    systemRebootPub = new ROSLIB.Topic({
+        ros: ros,
+        name: '/system/reboot',
+        messageType: 'std_msgs/Empty'
+    });
+    systemRebootPub.advertise();
+
+    systemShutdownPub = new ROSLIB.Topic({
+        ros: ros,
+        name: '/system/shutdown',
+        messageType: 'std_msgs/Empty'
+    });
+    systemShutdownPub.advertise();
+
 }
 
   
@@ -195,6 +211,18 @@ function publishServos() {
   
 }
 
+function systemReboot(){
+   
+    systemRebootPub.publish()
+    
+}
+
+function turnOff(){
+    
+    systemShutdownPub.publish()
+    
+}
+
 function shutdown() {
     clearInterval(twistIntervalID);
     clearInterval(servoIntervalID);
@@ -202,6 +230,8 @@ function shutdown() {
     servoPub1.unadvertise();
     servoPub2.unadvertise();
     servoPub3.unadvertise();
+    systemRebootPub.unadvertise();
+    systemShutdownPub.unadvertise();
     ros.close();
 }
 
