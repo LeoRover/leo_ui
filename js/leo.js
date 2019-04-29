@@ -87,6 +87,7 @@ function initROS() {
         name : '/battery',
         messageType : 'std_msgs/Float32'
     });
+    batterySub.subscribe(batteryCallback);
 
 }
 
@@ -189,12 +190,9 @@ function initTeleopKeyboard() {
     });
 }
 
-
-function subscribeBattery() {
-    batterySub.subscribe(function(message) {
-    console.log('Voltage: ' + message.data);
-    document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data;
-    });
+function batteryCallback(message) {
+    //var voltage=
+    document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data.toPrecision(4) + 'V';
 }
 
 
@@ -269,7 +267,6 @@ window.onload = function () {
 
     servoIntervalID = setInterval(() => publishServos(), 50);
 
-    batteryIntervalID = setInterval(() => subscribeBattery(), 100);
 
     window.addEventListener("beforeunload", () => shutdown());
 }
