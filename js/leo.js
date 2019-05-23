@@ -1,14 +1,11 @@
 var twist;
 var manager;
 var ros;
-var batteryClient;
+var batterySub;
 var cmdVelPub;
-var servoPub1;
-var servoPub2;
-var servoPub3;
-var servoVal1;
-var servoVal2;
-var servoVal3;
+var servo1Pub, servo2Pub, servo3Pub;
+var servo1Val, servo2Val, servo3Val;
+var servo1Last = 0, servo2Last = 0, servo3Last = 0;
 var twistIntervalID;
 var servoIntervalID;
 var robot_hostname;
@@ -16,13 +13,9 @@ var batterySub;
 
 function initROS() {
 
-    robot_hostname = location.hostname;
-    //robot_hostname="host_IP";
-
     ros = new ROSLIB.Ros({
         url: "ws://" + robot_hostname + ":9090"
     });
-
 
     // Init message with zero values.
     twist = new ROSLIB.Message({
@@ -41,32 +34,39 @@ function initROS() {
     cmdVelPub = new ROSLIB.Topic({
         ros: ros,
         name: '/cmd_vel',
-        messageType: 'geometry_msgs/Twist'
+        messageType: 'geometry_msgs/Twist',
+        queue_size: 10
     });
 
     cmdVelPub.advertise();
 
-    servoPub1 = new ROSLIB.Topic({
+    servo1Pub = new ROSLIB.Topic({
         ros: ros,
         name: '/servo1/angle',
-        messageType: 'std_msgs/Int16'
+        messageType: 'std_msgs/Int16',
+        latch: true,
+        queue_size: 5
     });
 
-    servoPub2 = new ROSLIB.Topic({
+    servo2Pub = new ROSLIB.Topic({
         ros: ros,
         name: '/servo2/angle',
-        messageType: 'std_msgs/Int16'
+        messageType: 'std_msgs/Int16',
+        latch: true,
+        queue_size: 5
     });
 
-    servoPub3 = new ROSLIB.Topic({
+    servo3Pub = new ROSLIB.Topic({
         ros: ros,
         name: '/servo3/angle',
-        messageType: 'std_msgs/Int16'
+        messageType: 'std_msgs/Int16',
+        latch: true,
+        queue_size: 5
     });
 
-    servoPub1.advertise();
-    servoPub2.advertise();
-    servoPub3.advertise();
+    servo1Pub.advertise();
+    servo2Pub.advertise();
+    servo3Pub.advertise();
 
     systemRebootPub = new ROSLIB.Topic({
         ros: ros,
@@ -85,7 +85,8 @@ function initROS() {
     batterySub = new ROSLIB.Topic({
         ros : ros,
         name : '/battery',
-        messageType : 'std_msgs/Float32'
+        messageType : 'std_msgs/Float32',
+        queue_length: 1
     });
     batterySub.subscribe(batteryCallback);
 
@@ -96,13 +97,13 @@ function initSliders() {
 
     $('#s1-slider').slider({
         tooltip: 'show',
-         min: -90,
+        min: -90,
         max: 90,
         step: 1,
         value: 0
     });
     $('#s1-slider').on("slide", function(slideEvt) {
-        servoVal1 = slideEvt.value;
+        servo1Val = slideEvt.value;
     });
 
     $('#s2-slider').slider({
@@ -113,7 +114,7 @@ function initSliders() {
         value: 0
     });
     $('#s2-slider').on("slide", function(slideEvt) {
-        servoVal2 = slideEvt.value;
+        servo2Val = slideEvt.value;
     });
 
     $('#s3-slider').slider({
@@ -124,40 +125,36 @@ function initSliders() {
         value: 0
     });
     $('#s3-slider').on("slide", function(slideEvt) {
-        servoVal3 = slideEvt.value;
+        servo3Val = slideEvt.value;
     });
 }
 
-
-
 function createJoystick() {
 
-    if (1 == 1) {
-        joystickContainer = document.getElementById('joystick');
+    joystickContainer = document.getElementById('joystick');
 
-        manager = nipplejs.create({
-            zone: joystickContainer,
-            position: { left: 65 + '%', top: 50 + '%' },
-            mode: 'static',
-            size: 200,
-            color: '#ffffff',
-            restJoystick: true
-        });
+    manager = nipplejs.create({
+        zone: joystickContainer,
+        position: { left: 65 + '%', top: 50 + '%' },
+        mode: 'static',
+        size: 200,
+        color: '#ffffff',
+        restJoystick: true
+    });
 
-        manager.on('move', function (evt, nipple) {
+    manager.on('move', function (evt, nipple) {
 
-            var lin = Math.sin(nipple.angle.radian) * nipple.distance * 0.01;
-            var ang = -Math.cos(nipple.angle.radian) * nipple.distance * 0.01;
+        var lin = Math.sin(nipple.angle.radian) * nipple.distance * 0.01;
+        var ang = -Math.cos(nipple.angle.radian) * nipple.distance * 0.01;
 
-            twist.linear.x = lin * 0.5;
-            twist.angular.z = ang * 1;
-        });
+        twist.linear.x = lin * 0.5;
+        twist.angular.z = ang * 1;
+    });
 
-        manager.on('end', function () {
-            twist.linear.x = 0
-            twist.angular.z = 0
-        });
-    }
+    manager.on('end', function () {
+        twist.linear.x = 0
+        twist.angular.z = 0
+    });
 }
 
 function initTeleopKeyboard() {
@@ -191,59 +188,57 @@ function initTeleopKeyboard() {
 }
 
 function batteryCallback(message) {
-    //var voltage=
     document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data.toPrecision(4) + 'V';
 }
-
 
 function publishTwist() {
     cmdVelPub.publish(twist)
 }
 
 function publishServos() {
-    servoMsg1 = new ROSLIB.Message({
-        data: servoVal1
-      
-    });
+    var servoMsg;
 
-    servoPub1.publish(servoMsg1);
+    if (servo1Val != servo1Last) {
+        servo1Last = servo1Val;
+        servoMsg = new ROSLIB.Message({
+            data: servo1Val
+        });
+        servo1Pub.publish(servoMsg);
+    }
 
-    servoMsg2 = new ROSLIB.Message({
-        data: servoVal2
-      
-    });
+    if (servo2Val != servo2Last) {
+        servo2Last = servo2Val;
+        servoMsg = new ROSLIB.Message({
+            data: servo2Val
+        });
+        servo2Pub.publish(servoMsg);
+    }
 
-    servoPub2.publish(servoMsg2);
+    if (servo3Val != servo3Last) {
+        servo3Last = servo3Val;
+        servoMsg = new ROSLIB.Message({
+            data: servo3Val
+        });
+        servo3Pub.publish(servoMsg);
+    }
 
-    servoMsg3 = new ROSLIB.Message({
-        data: servoVal3
-      
-    });
-
-    servoPub3.publish(servoMsg3);
-
-  
 }
 
 function systemReboot(){
-   
     systemRebootPub.publish()
-    
 }
 
 function turnOff(){
-    
     systemShutdownPub.publish()
-    
 }
 
 function shutdown() {
     clearInterval(twistIntervalID);
     clearInterval(servoIntervalID);
     cmdVelPub.unadvertise();
-    servoPub1.unadvertise();
-    servoPub2.unadvertise();
-    servoPub3.unadvertise();
+    servo1Pub.unadvertise();
+    servo2Pub.unadvertise();
+    servo3Pub.unadvertise();
     systemRebootPub.unadvertise();
     systemShutdownPub.unadvertise();
     batterySub.unsubscribe();
@@ -252,21 +247,19 @@ function shutdown() {
 
 window.onload = function () {
 
+    robot_hostname = location.hostname;
+
     initROS();
     initSliders();
     initTeleopKeyboard();
     createJoystick();
 
     video = document.getElementById('video');
-    //USB_cam node
-    //video.src = "http://" + robot_hostname + ":8080/stream?topic=/usb_cam/image_raw&type=ros_compressed&quality=80";
     video.src = "http://" + robot_hostname + ":8080/stream?topic=/raspicam_node/image&type=ros_compressed";
-    console.log(robot_hostname);
     
-    twistIntervalID = setInterval(() => publishTwist(), 50);
+    twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
-    servoIntervalID = setInterval(() => publishServos(), 50);
-
+    servoIntervalID = setInterval(() => publishServos(), 100); // 10 hz
 
     window.addEventListener("beforeunload", () => shutdown());
 }
