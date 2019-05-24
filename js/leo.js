@@ -11,6 +11,9 @@ var servoIntervalID;
 var robot_hostname;
 var batterySub;
 
+var max_linear_speed = 0.5;
+var max_angular_speed = 1.5;
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -147,8 +150,8 @@ function createJoystick() {
         var lin = Math.sin(nipple.angle.radian) * nipple.distance * 0.01;
         var ang = -Math.cos(nipple.angle.radian) * nipple.distance * 0.01;
 
-        twist.linear.x = lin * 0.5;
-        twist.angular.z = ang * 1;
+        twist.linear.x = lin * max_linear_speed;
+        twist.angular.z = ang * max_angular_speed;
     });
 
     manager.on('end', function () {
@@ -162,16 +165,16 @@ function initTeleopKeyboard() {
     body.addEventListener('keydown', function(e) {
         switch(e.keyCode) {
             case 37: //left
-                twist.angular.z = 0.5;
+                twist.angular.z = max_angular_speed;
                 break;
             case 39: //right
-                twist.angular.z = -0.5;
+                twist.angular.z = -max_angular_speed;
                 break;
             case 38: ///up
-                twist.linear.x = 0.4;
+                twist.linear.x = max_linear_speed;
                 break;
             case 40: //down
-                twist.linear.x = -0.4;
+                twist.linear.x = -max_linear_speed;
         }
     });
     body.addEventListener('keyup', function(e) {
