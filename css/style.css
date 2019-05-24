@@ -1,14 +1,13 @@
 .icon-bar {
     width: 90px; /* Set a specific width */
     background-color: red; /* Dark-grey background */
-  }
-
-  .custom-btn {
-    width: 78px !important;
-    height: 50px !important;
 }
 
-  .marg-right{
+.custom-btn {
+    height: 50px;
+}
+
+.marg-right{
     float: right;
 }
 
@@ -64,8 +63,6 @@ body {
 
 .bg-servo {
   background: #00000079;
-  background-image: radial-gradient(#333333 10%, transparent 0);
-  background-size: 30px 30px;
 }
 
 .rotate {
