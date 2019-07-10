@@ -258,7 +258,7 @@ window.onload = function () {
     createJoystick();
 
     video = document.getElementById('video');
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=/raspicam_node/image&type=ros_compressed";
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
     
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
