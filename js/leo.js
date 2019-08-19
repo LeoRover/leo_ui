@@ -22,7 +22,7 @@ function initROS() {
 
     // Init message with zero values.
     twist = new ROSLIB.Message({
-        linear: {
+        linear: {                                                                   
             x: 0,
             y: 0,
             z: 0
@@ -195,7 +195,7 @@ function batteryCallback(message) {
 }
 
 function publishTwist() {
-    cmdVelPub.publish(twist)
+    cmdVelPub.publish(twist);
 }
 
 function publishServos() {
@@ -234,6 +234,12 @@ function systemReboot(){
 function turnOff(){
     systemShutdownPub.publish()
 }
+
+window.onblur = function(){  
+    twist.linear.x = 0;
+    twist.angular.z = 0;
+    publishTwist();             
+  }  
 
 function shutdown() {
     clearInterval(twistIntervalID);
