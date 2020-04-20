@@ -12,7 +12,7 @@ var robot_hostname;
 var batterySub;
 
 var max_linear_speed = 0.5;
-var max_angular_speed = 2.5;
+var max_angular_speed = 1.2;
 
 function initROS() {
 
