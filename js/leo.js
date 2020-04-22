@@ -36,7 +36,7 @@ function initROS() {
 
     cmdVelPub = new ROSLIB.Topic({
         ros: ros,
-        name: '/cmd_vel',
+        name: 'cmd_vel',
         messageType: 'geometry_msgs/Twist',
         queue_size: 10
     });
@@ -45,7 +45,7 @@ function initROS() {
 
     servo1Pub = new ROSLIB.Topic({
         ros: ros,
-        name: '/servo1/angle',
+        name: 'servo1/angle',
         messageType: 'std_msgs/Int16',
         latch: true,
         queue_size: 5
@@ -53,7 +53,7 @@ function initROS() {
 
     servo2Pub = new ROSLIB.Topic({
         ros: ros,
-        name: '/servo2/angle',
+        name: 'servo2/angle',
         messageType: 'std_msgs/Int16',
         latch: true,
         queue_size: 5
@@ -61,7 +61,7 @@ function initROS() {
 
     servo3Pub = new ROSLIB.Topic({
         ros: ros,
-        name: '/servo3/angle',
+        name: 'servo3/angle',
         messageType: 'std_msgs/Int16',
         latch: true,
         queue_size: 5
@@ -73,21 +73,21 @@ function initROS() {
 
     systemRebootPub = new ROSLIB.Topic({
         ros: ros,
-        name: '/system/reboot',
+        name: 'system/reboot',
         messageType: 'std_msgs/Empty'
     });
     systemRebootPub.advertise();
 
     systemShutdownPub = new ROSLIB.Topic({
         ros: ros,
-        name: '/system/shutdown',
+        name: 'system/shutdown',
         messageType: 'std_msgs/Empty'
     });
     systemShutdownPub.advertise();
 
     batterySub = new ROSLIB.Topic({
         ros : ros,
-        name : '/battery',
+        name : 'battery',
         messageType : 'std_msgs/Float32',
         queue_length: 1
     });
