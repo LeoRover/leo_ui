@@ -14,7 +14,6 @@ fpm --input-type dir \
     --deb-no-default-config-files \
     --exclude .git \
     --exclude make_deb.sh \
-    --deb-dist bionic \
     --verbose \
     --prefix "/opt/leo_ui" \
     --description "Leo Rover Web User Interface" \
