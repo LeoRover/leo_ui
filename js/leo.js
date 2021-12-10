@@ -2,6 +2,7 @@ var twist;
 var manager;
 var ros;
 var batterySub;
+var batterySub1;
 var cmdVelPub;
 var servo1Pub, servo2Pub, servo3Pub;
 var servo1Val, servo2Val, servo3Val;
@@ -9,7 +10,6 @@ var servo1Last = 0, servo2Last = 0, servo3Last = 0;
 var twistIntervalID;
 var servoIntervalID;
 var robot_hostname;
-var batterySub;
 
 var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
@@ -92,6 +92,14 @@ function initROS() {
         queue_length: 1
     });
     batterySub.subscribe(batteryCallback);
+
+    batterySub1 = new ROSLIB.Topic({
+        ros: ros,
+        name: 'firmware/battery',
+        messageType: 'std_msgs/Float32',
+        queue_length: 1
+    });
+    batterySub1.subscribe(batteryCallback);
 
 }
 
