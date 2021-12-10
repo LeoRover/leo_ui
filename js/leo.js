@@ -161,32 +161,27 @@ function createJoystick() {
 }
 
 function initTeleopKeyboard() {
+    const left_keys = ["ArrowLeft", "a", "A"];
+    const right_keys = ["ArrowRight", "d", "D"];
+    const up_keys = ["ArrowUp", "w", "W"];
+    const down_keys = ["ArrowDown", "s", "S"];
+
     var body = document.getElementsByTagName('body')[0];
     body.addEventListener('keydown', function(e) {
-        switch(e.keyCode) {
-            case 37: //left
-                twist.angular.z = max_angular_speed;
-                break;
-            case 39: //right
-                twist.angular.z = -max_angular_speed;
-                break;
-            case 38: ///up
-                twist.linear.x = max_linear_speed;
-                break;
-            case 40: //down
-                twist.linear.x = -max_linear_speed;
-        }
+        if (left_keys.includes(e.key))
+            twist.angular.z = max_angular_speed;
+        else if (right_keys.includes(e.key))
+            twist.angular.z = -max_angular_speed;
+        else if (up_keys.includes(e.key))
+            twist.linear.x = max_linear_speed;
+        else if (down_keys.includes(e.key))
+            twist.linear.x = -max_linear_speed;
     });
     body.addEventListener('keyup', function(e) {
-        switch(e.keyCode) {
-            case 37: //left
-            case 39: //right
-                twist.angular.z = 0;
-                break;
-            case 38: ///up
-            case 40: //down
-                twist.linear.x = 0;
-        }
+        if (left_keys.includes(e.key) || right_keys.includes(e.key))
+            twist.angular.z = 0;
+        else if (up_keys.includes(e.key) || down_keys.includes(e.key))
+            twist.linear.x = 0;
     });
 }
 
