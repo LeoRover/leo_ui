@@ -22,7 +22,7 @@ function initROS() {
 
     // Init message with zero values.
     twist = new ROSLIB.Message({
-        linear: {                                                                   
+        linear: {
             x: 0,
             y: 0,
             z: 0
@@ -86,16 +86,16 @@ function initROS() {
     systemShutdownPub.advertise();
 
     batterySub = new ROSLIB.Topic({
-        ros : ros,
-        name : 'battery',
-        messageType : 'std_msgs/Float32',
+        ros: ros,
+        name: 'battery',
+        messageType: 'std_msgs/Float32',
         queue_length: 1
     });
     batterySub.subscribe(batteryCallback);
 
 }
 
-  
+
 function initSliders() {
 
     $('#s1-slider').slider({
@@ -105,7 +105,7 @@ function initSliders() {
         step: 1,
         value: 0
     });
-    $('#s1-slider').on("slide", function(slideEvt) {
+    $('#s1-slider').on("slide", function (slideEvt) {
         servo1Val = slideEvt.value;
     });
 
@@ -116,7 +116,7 @@ function initSliders() {
         step: 1,
         value: 0
     });
-    $('#s2-slider').on("slide", function(slideEvt) {
+    $('#s2-slider').on("slide", function (slideEvt) {
         servo2Val = slideEvt.value;
     });
 
@@ -127,7 +127,7 @@ function initSliders() {
         step: 1,
         value: 0
     });
-    $('#s3-slider').on("slide", function(slideEvt) {
+    $('#s3-slider').on("slide", function (slideEvt) {
         servo3Val = slideEvt.value;
     });
 }
@@ -167,7 +167,7 @@ function initTeleopKeyboard() {
     const down_keys = ["ArrowDown", "s", "S"];
 
     var body = document.getElementsByTagName('body')[0];
-    body.addEventListener('keydown', function(e) {
+    body.addEventListener('keydown', function (e) {
         if (left_keys.includes(e.key))
             twist.angular.z = max_angular_speed;
         else if (right_keys.includes(e.key))
@@ -177,7 +177,7 @@ function initTeleopKeyboard() {
         else if (down_keys.includes(e.key))
             twist.linear.x = -max_linear_speed;
     });
-    body.addEventListener('keyup', function(e) {
+    body.addEventListener('keyup', function (e) {
         if (left_keys.includes(e.key) || right_keys.includes(e.key))
             twist.angular.z = 0;
         else if (up_keys.includes(e.key) || down_keys.includes(e.key))
@@ -222,19 +222,19 @@ function publishServos() {
 
 }
 
-function systemReboot(){
+function systemReboot() {
     systemRebootPub.publish()
 }
 
-function turnOff(){
+function turnOff() {
     systemShutdownPub.publish()
 }
 
-window.onblur = function(){  
+window.onblur = function () {
     twist.linear.x = 0;
     twist.angular.z = 0;
-    publishTwist();             
-  }  
+    publishTwist();
+}
 
 function shutdown() {
     clearInterval(twistIntervalID);
@@ -260,7 +260,7 @@ window.onload = function () {
 
     video = document.getElementById('video');
     video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
-    
+
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
     servoIntervalID = setInterval(() => publishServos(), 100); // 10 hz
