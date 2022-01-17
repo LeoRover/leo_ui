@@ -273,7 +273,7 @@ function shutdown() {
 }
 
 function setVideoSrc() {
-    if(ros_namespace !== 'undefined')
+    if(typeof ros_namespace !== 'undefined')
         video.src = "http://" + robot_hostname + ":8080/stream?topic=" + ros_namespace + "/camera/image_raw&type=ros_compressed";
     else
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
