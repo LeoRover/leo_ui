@@ -209,7 +209,6 @@ function batteryCallback(message) {
 
 function namespaceCallback(message) {
     ros_namespace = message.data;
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + ros_namespace + "/camera/image_raw&type=ros_compressed";
 }
 
 
@@ -273,6 +272,14 @@ function shutdown() {
     ros.close();
 }
 
+function setVideoSrc() {
+    if(ros_namespace !== 'undefined')
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + ros_namespace + "/camera/image_raw&type=ros_compressed";
+    else
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+}
+
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
@@ -283,6 +290,7 @@ window.onload = function () {
     createJoystick();
 
     video = document.getElementById('video');
+    const timeout = setTimeout(setVideoSrc, 3000);
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
