@@ -14,6 +14,9 @@ var robot_hostname;
 var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
 
+var namespaceSub;
+var ros_namespace;
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -101,6 +104,13 @@ function initROS() {
     });
     batterySub1.subscribe(batteryCallback);
 
+    namespaceSub = new ROSLIB.Topic({
+        ros: ros,
+        name: 'ros_namespace',
+        messageType: 'std_msgs/String',
+        queue_length: 1
+    });
+    namespaceSub.subscribe(namespaceCallback);
 }
 
 
@@ -197,6 +207,12 @@ function batteryCallback(message) {
     document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data.toPrecision(4) + 'V';
 }
 
+function namespaceCallback(message) {
+    ros_namespace = message.data;
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + ros_namespace + "/camera/image_raw&type=ros_compressed";
+}
+
+
 function publishTwist() {
     cmdVelPub.publish(twist);
 }
@@ -267,7 +283,6 @@ window.onload = function () {
     createJoystick();
 
     video = document.getElementById('video');
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
