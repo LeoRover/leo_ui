@@ -15,7 +15,7 @@ var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
 
 var namespaceSub;
-var ros_namespace;
+var robot_namespace;
 
 function initROS() {
 
@@ -106,7 +106,7 @@ function initROS() {
 
     namespaceSub = new ROSLIB.Topic({
         ros: ros,
-        name: 'ros_namespace',
+        name: 'robot_namespace',
         messageType: 'std_msgs/String',
         queue_length: 1
     });
@@ -208,8 +208,8 @@ function batteryCallback(message) {
 }
 
 function namespaceCallback(message) {
-    ros_namespace = message.data;
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + ros_namespace + "camera/image_raw&type=ros_compressed";
+    robot_namespace = message.data;
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
 }
 
 
@@ -274,7 +274,7 @@ function shutdown() {
 }
 
 function defaultVideoSrc() {
-    if(typeof ros_namespace == 'undefined')
+    if(typeof robot_namespace == 'undefined')
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
 }
 
