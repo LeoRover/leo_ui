@@ -14,6 +14,9 @@ var robot_hostname;
 var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
 
+var namespaceSub;
+var robot_namespace;
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -101,6 +104,13 @@ function initROS() {
     });
     batterySub1.subscribe(batteryCallback);
 
+    namespaceSub = new ROSLIB.Topic({
+        ros: ros,
+        name: 'robot_namespace',
+        messageType: 'std_msgs/String',
+        queue_length: 1
+    });
+    namespaceSub.subscribe(namespaceCallback);
 }
 
 
@@ -197,6 +207,12 @@ function batteryCallback(message) {
     document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.data.toPrecision(4) + 'V';
 }
 
+function namespaceCallback(message) {
+    robot_namespace = message.data;
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
+}
+
+
 function publishTwist() {
     cmdVelPub.publish(twist);
 }
@@ -257,6 +273,16 @@ function shutdown() {
     ros.close();
 }
 
+function defaultVideoSrc() {
+    namespaceSub.unsubscribe();
+    
+    if(typeof robot_namespace == 'undefined') {
+        console.log("Unable to get the robot namespace. Assuming it's '/'.");
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+    }
+}
+
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
@@ -267,7 +293,7 @@ window.onload = function () {
     createJoystick();
 
     video = document.getElementById('video');
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+    const timeout = setTimeout(defaultVideoSrc, 3000);
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
