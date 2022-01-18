@@ -274,8 +274,12 @@ function shutdown() {
 }
 
 function defaultVideoSrc() {
-    if(typeof robot_namespace == 'undefined')
+    namespaceSub.unsubscribe();
+    
+    if(typeof robot_namespace == 'undefined') {
+        console.log("Unable to get the robot namespace. Assuming it's '/'.");
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+    }
 }
 
 
