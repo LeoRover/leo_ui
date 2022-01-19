@@ -311,7 +311,7 @@ function checkPublishers(topicName) {
 
         if(publishers.length != 0) {
             var opt = document.createElement('option');
-            opt.innerHTML = cameraTopics[i];
+            opt.innerHTML = topicName;
             select.appendChild(opt);
         }
     });
