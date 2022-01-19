@@ -30,7 +30,7 @@
   }
   
   /* Links inside the dropdown */
-  .dropdown-content a {
+  .dropdown-content button {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -38,7 +38,7 @@
   }
   
   /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #ddd}
+  .dropdown-content button:hover {background-color: #ddd}
   
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
   .show {display:block;} 

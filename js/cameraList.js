@@ -1,18 +1,18 @@
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-  
-  // Close the dropdown menu if the user clicks outside of it
-window.onclick = function(event) {
-    console.log(cameraTopics);
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
+var select;
+
+function createOptions() {
+    if(select.childElementCount == 0) {
+        for(var i = 0; i < cameraTopics.length; i++) {
+            var opt = document.createElement('option');
+            opt.innerHTML = cameraTopics[i];
+            select.appendChild(opt);
         }
-      }
     }
-  } 
+}
+
+function test() {
+    select = document.getElementById('camera-select');
+    console.log(select);
+    console.log(select.childElementCount);
+    const timeout = setTimeout(createOptions, 3000);
+}
