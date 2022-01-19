@@ -17,6 +17,11 @@ var max_angular_speed = 1.2;
 var namespaceSub;
 var robot_namespace;
 
+var publishersClient;
+var topicsForTypeClient;
+
+var cameraTopics = [];
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -111,6 +116,19 @@ function initROS() {
         queue_length: 1
     });
     namespaceSub.subscribe(namespaceCallback);
+
+    publishersClient = new ROSLIB.Service({
+        ros : ros,
+        name : '/rosapi/publishers',
+        serviceType : '/rosapi/Publishers'
+    });
+    
+    topicsForTypeClient = new ROSLIB.Service({
+        ros : ros,
+        name : '/rosapi/topics_for_type',
+        serviceType : '/rosapi/TopicsForType'
+    });
+    
 }
 
 
@@ -283,6 +301,30 @@ function defaultVideoSrc() {
 }
 
 
+function checkPublishers(topicName) {
+    var request = new ROSLIB.ServiceRequest({topic : topicName});
+
+    publishersClient.callService(request, function(result) {
+	    var publishers = result.publishers;
+
+        if(publishers.length != 0) {
+            cameraTopics.push(topicName);
+        }
+    });
+}
+
+function getVideoTopics() {
+    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/Image"});
+
+    topicsForTypeClient.callService(request, function(result) {
+	    var topics = result.topics;
+
+	    for(var i = 0; i < topics.length; i++) {
+	        checkPublishers(topics[i]);
+	    }
+    });
+}
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
@@ -291,6 +333,7 @@ window.onload = function () {
     initSliders();
     initTeleopKeyboard();
     createJoystick();
+    getVideoTopics();
 
     video = document.getElementById('video');
     const timeout = setTimeout(defaultVideoSrc, 3000);
