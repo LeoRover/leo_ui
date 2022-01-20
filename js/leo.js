@@ -228,7 +228,7 @@ function batteryCallback(message) {
 function namespaceCallback(message) {
     robot_namespace = message.data;
     video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
-    selectCorrectOption(robot_namespace + "camera/image_raw");
+    const timeout = setTimeout(function () {selectCorrectOption(robot_namespace + "camera/image_raw");}, 3000);
 }
 
 
@@ -298,7 +298,7 @@ function defaultVideoSrc() {
     if(typeof robot_namespace == 'undefined') {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
-        selectCorrectOption("/camera/image_raw");
+        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 3000);
     }
 }
 
