@@ -47,17 +47,20 @@
 	<nav class="navbar navbar-expand-md bg-bar">
 		<div class="container-fluid">
 			
-			<div class="col-2 navbar-brand" href="#">
+			<div class="col" href="#">
 				<img class="rounded" src="./img/logoLeo.png" alt="Logo" style="width: 70px; height: 40px;"/>
 			</div>
 
-			<select name="camera" id="camera-select" onchange="changeVideoSrc();"></select>
+			<div class="col">
+				<p id="select -label" style="color:aliceblue; text-align: start; margin-bottom: 0%;">Camera view:</p>
+				<select name="camera" id="camera-select" onchange="changeVideoSrc();"></select>
+			</div>
 
 			<div class="col-3" >
 				<div id="batteryID" class="center-fit" style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
 			</div>
 
-			<div class="col-2 text-center">
+			<div class="col text-center">
 				<button class="bg-dark btn-sm mx-auto" style="width: 45px; height: 45px;" type="button" onclick="fullScreen()">
 					<img class="rounded img-fluid" src="img/nav-bar-fullscreen.svg" alt="FullScreen" style="width: 25px; height: 25px;"/>
 				</button>
@@ -67,7 +70,7 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
-			<div class="col-5 collapse navbar-collapse ml-auto" id="collapsibleNavbar">
+			<div class="col collapse navbar-collapse ml-auto" id="collapsibleNavbar">
 				<ul class="navbar-nav ml-auto">
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()">Reboot</button>
