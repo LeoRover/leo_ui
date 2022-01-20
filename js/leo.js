@@ -11,6 +11,39 @@ var twistIntervalID;
 var servoIntervalID;
 var robot_hostname;
 
+var gamepadAPI = {
+    index: undefined,
+    controller: {},
+    turbo: false,
+    connect: function(evt) {
+        gamepadAPI.index = evt.gamepad.index;
+        gamepadAPI.turbo = true;
+        console.log('Gamepad connected.');
+    },
+    disconnect: function(evt) {
+        gamepadAPI.index = undefined;
+        delete gamepadAPI.controller;
+        console.log('Gamepad disconnected.');
+    },
+    update: function() {
+        if (typeof gamepadAPI.index == 'undefined') return;
+        
+        var c = navigator.getGamepads()[gamepadAPI.index];
+      
+        var axes = [];
+        if(c.axes) {
+          for(var a=0,x=c.axes.length; a<x; a++) {
+            axes.push(c.axes[a]);
+          }
+        }
+
+        twist.linear.x = -axes[1]*max_linear_speed;
+        twist.angular.z = -axes[0]*max_angular_speed;
+        // console.log(twist.linear.x, twist.angular.z);
+    }
+  };
+  
+
 var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
 
@@ -255,7 +288,7 @@ function shutdown() {
     systemShutdownPub.unadvertise();
     batterySub.unsubscribe();
     ros.close();
-}
+} 
 
 window.onload = function () {
 
@@ -269,9 +302,14 @@ window.onload = function () {
     video = document.getElementById('video');
     video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
 
+    window.addEventListener("gamepadconnected", gamepadAPI.connect)
+    window.addEventListener("gamepaddisconnected", gamepadAPI.disconnect)
+
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
     servoIntervalID = setInterval(() => publishServos(), 100); // 10 hz
+
+    servoIntervalID = setInterval(() => gamepadAPI.update(), 100); // 10 hz
 
     window.addEventListener("beforeunload", () => shutdown());
 }
