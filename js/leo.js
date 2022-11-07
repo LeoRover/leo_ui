@@ -318,7 +318,7 @@ function checkPublishers(topicName) {
 }
 
 function getVideoTopics() {
-    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/Image"});
+    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/CompressedImage"});
 
     topicsForTypeClient.callService(request, function(result) {
 	    var topics = result.topics;
