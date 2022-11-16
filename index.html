@@ -35,14 +35,10 @@
 
 		<script src="./js/leo.js"></script>
 		<script src="./js/fullscreen.js"></script>
-		<script src="./js/servoblock.js"></script>
-
-	
 
 	</head>
 
 	<body class="bg-custom">
-
 
 	<nav class="navbar navbar-expand-md bg-bar">
 		<div class="container-fluid">
@@ -70,9 +66,6 @@
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()">Reboot</button>
 				</li>
-				<!-- <li class="nav-item ml-auto">
-					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="streamReboot()">Reboot stream</button>
-				</li> -->
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 ml-3" onclick="turnOff()">Turn off</button>
 				</li>
@@ -81,62 +74,16 @@
 		</div>
 	</nav> 
 
-
-	
-
-	<div class="row md-6 fixed-bottom">
-
-		<div class="col my-2 d-none d-md-block">
-			<div id="servoB" class=" rounded bg-servo" style=" width: 250px; height: 200px;" >
-
-				<div class="row">
-					<div class="col-md-2 ml-1 mt-2">
-						<label for="lin-slider">
-							<strong class="text-light">Servo1</strong>
-						</label>
-						<input id="s1-slider" type="text"/>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-2 ml-1">
-						<label for="lin-slider">
-							<strong class="text-light">Servo2</strong>
-						</label>
-						<input id="s2-slider" type="text"/>
-					</div>
-				</div>
-				
-				<div class="row center ml-1">
-					<div class="col-md-2">
-						<label for="lin-slider">
-							<strong class="text-light">Servo3</strong>
-						</label>
-						<input id="s3-slider" type="text"/>
-					</div>	
-				</div>
-			</div>
-		</div>
-
-		<div class="row my-2 align-self-end mr-auto d-none d-md-block">
-				<button id="servoBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="servoHide()">Hide servos</button>
-		</div>
-
-		<div class="col my-2 d-flex" style="height: 210px;">
+	<div class="row fixed-bottom">
+		<div class="col my-2 d-flex ml-auto" style="height: 210px;">
 				<div id="joystick"></div>
 		</div>
-
 	</div>
-
-
 
 	<div class="justify-content-center" style="margin-top: -70px; min-width: 100%; min-height: 100%; ">
 		<img src="" class="p-1 center-fit" alt="" id="video" style="background-size: cover"></img>
 	<div>
 
-
-
-	
 	</body>
 
 </html>
