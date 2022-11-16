@@ -302,16 +302,15 @@ function defaultVideoSrc() {
     }
 }
 
-
 function checkPublishers(topicName) {
     var request = new ROSLIB.ServiceRequest({topic : topicName});
 
     publishersClient.callService(request, function(result) {
 	    var publishers = result.publishers;
 
-        if(publishers.length != 0) {
+        if(publishers.length != 0 && topicName.endsWith("/compressed")) {
             var opt = document.createElement('option'); 
-            opt.innerHTML = topicName.replace("/compressed", "");
+            opt.innerHTML = topicName.slice(0,-11);
             select.appendChild(opt);
         }
     });
