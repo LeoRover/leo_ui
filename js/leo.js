@@ -13,6 +13,11 @@ var max_angular_speed = 1.2;
 var namespaceSub;
 var robot_namespace;
 
+var publishersClient;
+var topicsForTypeClient;
+
+var select;
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -79,6 +84,19 @@ function initROS() {
         queue_length: 1
     });
     namespaceSub.subscribe(namespaceCallback);
+
+    publishersClient = new ROSLIB.Service({
+        ros : ros,
+        name : '/rosapi/publishers',
+        serviceType : '/rosapi/Publishers'
+    });
+    
+    topicsForTypeClient = new ROSLIB.Service({
+        ros : ros,
+        name : '/rosapi/topics_for_type',
+        serviceType : '/rosapi/TopicsForType'
+    });
+    
 }
 
 function createJoystick() {
@@ -141,6 +159,7 @@ function batteryCallback(message) {
 function namespaceCallback(message) {
     robot_namespace = message.data;
     video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
+    const timeout = setTimeout(function () {selectCorrectOption(robot_namespace + "camera/image_raw");}, 3000);
 }
 
 
@@ -177,9 +196,49 @@ function defaultVideoSrc() {
     if(typeof robot_namespace == 'undefined') {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 3000);
     }
 }
 
+function checkPublishers(topicName) {
+    var request = new ROSLIB.ServiceRequest({topic : topicName});
+
+    publishersClient.callService(request, function(result) {
+	    var publishers = result.publishers;
+
+        if(publishers.length != 0 && topicName.endsWith("/compressed")) {
+            var opt = document.createElement('option'); 
+            opt.innerHTML = topicName.slice(0,-11);
+            select.appendChild(opt);
+        }
+    });
+}
+
+function getVideoTopics() {
+    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/CompressedImage"});
+
+    topicsForTypeClient.callService(request, function(result) {
+	    var topics = result.topics;
+
+	    for(var i = 0; i < topics.length; i++) {
+	        checkPublishers(topics[i]);
+	    }
+    });
+}
+
+function changeVideoSrc() {
+    var selected = select.selectedIndex;
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + select.options[selected].text + "&type=ros_compressed";
+}
+
+function selectCorrectOption(name) {
+    for(var i = 0; i < select.options.length; i++) {
+        if(select.options[i].text == name) {
+            select.selectedIndex = i;
+            break;
+        }
+    }
+}
 
 window.onload = function () {
 
@@ -188,8 +247,11 @@ window.onload = function () {
     initROS();
     initTeleopKeyboard();
     createJoystick();
+    getVideoTopics();
 
     video = document.getElementById('video');
+    select = document.getElementById('camera-select');
+
     const timeout = setTimeout(defaultVideoSrc, 3000);
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
