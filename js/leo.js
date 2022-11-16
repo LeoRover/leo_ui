@@ -310,8 +310,8 @@ function checkPublishers(topicName) {
 	    var publishers = result.publishers;
 
         if(publishers.length != 0) {
-            var opt = document.createElement('option');
-            opt.innerHTML = topicName;
+            var opt = document.createElement('option'); 
+            opt.innerHTML = topicName.replace("/compressed", "");
             select.appendChild(opt);
         }
     });
