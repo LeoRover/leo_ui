@@ -243,6 +243,7 @@ function selectCorrectOption(name) {
 window.onload = function () {
 
     robot_hostname = location.hostname;
+    robot_hostname = "192.168.1.109"
 
     initROS();
     initTeleopKeyboard();
