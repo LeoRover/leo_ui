@@ -1,10 +1,10 @@
 .icon-bar {
-    width: 90px; /* Set a specific width */
-    background-color: red; /* Dark-grey background */
+    width: 90px;
+    background-color: red;
 }
 
 .custom-btn {
-    height: 50px;
+    height: 39px;
 }
 
 .marg-right{
@@ -31,22 +31,10 @@
   clear:both;
 }
 
-.slider-selection {
-	background: #BABABA;
-}
-
-.slider.slider-horizontal {
-	width: 100%
-}
-
 .row {
 	margin-left: 0px;
 	margin-right: 0px;
 }
-
-.slider.slider-horizontal .tooltip.tooltip-main.in,
-.slider.slider-vertical .tooltip.tooltip-main.in { opacity: 1 !important; }
-
 
 .center-fit {
   min-width: 100% !important;
@@ -62,13 +50,4 @@ body {
   background-size: 30px 30px;
   font-family: 'roboto_mediumregular';
   font-size: 14px;
-}
-
-.bg-servo {
-  background: #00000079;
-}
-
-.rotate {
-  transform: rotate(180deg);
-  z-index:-1;
 }
