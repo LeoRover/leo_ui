@@ -5,6 +5,8 @@
 
 .custom-btn {
     height: 39px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 .marg-right{
@@ -50,4 +52,19 @@ body {
   background-size: 30px 30px;
   font-family: 'roboto_mediumregular';
   font-size: 14px;
+}
+
+.navbar-collapse {
+  max-width: fit-content;
+}
+
+button.navbar-toggler {
+  max-width: fit-content;
+}
+
+img {
+  height: 100vh;
+  min-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
 }
