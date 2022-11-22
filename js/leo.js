@@ -105,7 +105,7 @@ function createJoystick() {
 
     manager = nipplejs.create({
         zone: joystickContainer,
-        position: { left: 80 + '%', top: 60 + '%' },
+        position: { right: 100 + 'px', bottom: 100 + 'px' },
         mode: 'static',
         size: 150,
         color: '#ffffff',
