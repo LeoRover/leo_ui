@@ -1,14 +1,14 @@
 .icon-bar {
-    width: 90px;
-    background-color: red;
+  width: 90px;
+  background-color: red;
 }
 
 .custom-btn {
   font-size: small;
-    height: 35px;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 3px;
+  height: 35px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 3px;
 }
 
 .custom-font-size {
@@ -16,7 +16,7 @@
 }
 
 .marg-right{
-    float: right;
+  float: right;
 }
 
 .bg-custom {
