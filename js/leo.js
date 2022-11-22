@@ -105,9 +105,9 @@ function createJoystick() {
 
     manager = nipplejs.create({
         zone: joystickContainer,
-        position: { left: 80 + '%', top: 40 + '%' },
+        position: { left: 80 + '%', top: 60 + '%' },
         mode: 'static',
-        size: 200,
+        size: 150,
         color: '#ffffff',
         restJoystick: true
     });
@@ -240,10 +240,14 @@ function selectCorrectOption(name) {
     }
 }
 
+function imgWidth() {
+    var element = document.getElementById("video");
+    element.classList.toggle("center-fit-full")
+}
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
-    robot_hostname = "192.168.1.109"
 
     initROS();
     initTeleopKeyboard();
