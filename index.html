@@ -55,11 +55,14 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
-			<div class="col-5 collapse navbar-collapse justify-content-end ml-auto" id="collapsibleNavbar">
-				<ul class="navbar-nav flex-row ml-md-auto w-auto">
+			<div class="col-5 collapse navbar-collapse justify-content-end ml-auto px-0" id="collapsibleNavbar">
+				<ul class="navbar-nav flex-row ml-md-auto w-auto custom-font-size padd">
 				<li class="nav-item mx-0 px-1 my-auto col-auto">
 					<p id="select -label" style="color:aliceblue; text-align: start; margin-bottom: 0%;">Camera stream:</p>
 					<select name="camera" id="camera-select" onchange="changeVideoSrc();"></select>
+				</li>
+				<li class="nav-item mx-0 px-1 my-auto col-auto">
+					<button id="imgBtn" class="btn btn-dark image-btn btn-sm custom-btn mt-2 mx-auto" type="button" onclick="imgWidth()">Stream</button>
 				</li>
 				<li class="nav-item mx-0 px-1 my-auto col-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 mx-auto" onclick="systemReboot()">Reboot</button>
@@ -71,16 +74,16 @@
 			</div>
 
 		</div>
-	</nav> 
+	</nav>
 
 	<div class="row fixed-bottom">
 		<div class="col my-2 d-flex ml-auto" style="height: 210px;">
-				<div id="joystick"></div>
+			<div id="joystick"></div>
 		</div>
 	</div>
 
 	<div class="justify-content-center">
-		<img src="" class="mx-auto d-block img-fluid" alt="" id="video"></img>
+		<img src="" class="center-fit" alt="" id="video"></img>
 	<div>
 	</body>
 
