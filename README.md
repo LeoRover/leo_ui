@@ -7,7 +7,8 @@ The main functionalities include:
 - streaming the camera image
 - reading battery voltage
 - rebooting and shutting down
-- setting position on the servos connected to [hServo] ports
+- selecting image stream
+- selecting stream mode
 
 ### User Interface Communication
 

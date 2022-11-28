@@ -4,11 +4,7 @@ var ros;
 var batterySub;
 var batterySub1;
 var cmdVelPub;
-var servo1Pub, servo2Pub, servo3Pub;
-var servo1Val, servo2Val, servo3Val;
-var servo1Last = 0, servo2Last = 0, servo3Last = 0;
 var twistIntervalID;
-var servoIntervalID;
 var robot_hostname;
 
 var max_linear_speed = 0.5;
@@ -50,34 +46,6 @@ function initROS() {
     });
 
     cmdVelPub.advertise();
-
-    servo1Pub = new ROSLIB.Topic({
-        ros: ros,
-        name: 'servo1/angle',
-        messageType: 'std_msgs/Int16',
-        latch: true,
-        queue_size: 5
-    });
-
-    servo2Pub = new ROSLIB.Topic({
-        ros: ros,
-        name: 'servo2/angle',
-        messageType: 'std_msgs/Int16',
-        latch: true,
-        queue_size: 5
-    });
-
-    servo3Pub = new ROSLIB.Topic({
-        ros: ros,
-        name: 'servo3/angle',
-        messageType: 'std_msgs/Int16',
-        latch: true,
-        queue_size: 5
-    });
-
-    servo1Pub.advertise();
-    servo2Pub.advertise();
-    servo3Pub.advertise();
 
     systemRebootPub = new ROSLIB.Topic({
         ros: ros,
@@ -131,52 +99,15 @@ function initROS() {
     
 }
 
-
-function initSliders() {
-
-    $('#s1-slider').slider({
-        tooltip: 'show',
-        min: -90,
-        max: 90,
-        step: 1,
-        value: 0
-    });
-    $('#s1-slider').on("slide", function (slideEvt) {
-        servo1Val = slideEvt.value;
-    });
-
-    $('#s2-slider').slider({
-        tooltip: 'show',
-        min: -90,
-        max: 90,
-        step: 1,
-        value: 0
-    });
-    $('#s2-slider').on("slide", function (slideEvt) {
-        servo2Val = slideEvt.value;
-    });
-
-    $('#s3-slider').slider({
-        tooltip: 'show',
-        min: -90,
-        max: 90,
-        step: 1,
-        value: 0
-    });
-    $('#s3-slider').on("slide", function (slideEvt) {
-        servo3Val = slideEvt.value;
-    });
-}
-
 function createJoystick() {
 
     joystickContainer = document.getElementById('joystick');
 
     manager = nipplejs.create({
         zone: joystickContainer,
-        position: { left: 65 + '%', top: 50 + '%' },
+        position: { right: 100 + 'px', bottom: 100 + 'px' },
         mode: 'static',
-        size: 200,
+        size: 150,
         color: '#ffffff',
         restJoystick: true
     });
@@ -236,35 +167,6 @@ function publishTwist() {
     cmdVelPub.publish(twist);
 }
 
-function publishServos() {
-    var servoMsg;
-
-    if (servo1Val != servo1Last) {
-        servo1Last = servo1Val;
-        servoMsg = new ROSLIB.Message({
-            data: servo1Val
-        });
-        servo1Pub.publish(servoMsg);
-    }
-
-    if (servo2Val != servo2Last) {
-        servo2Last = servo2Val;
-        servoMsg = new ROSLIB.Message({
-            data: servo2Val
-        });
-        servo2Pub.publish(servoMsg);
-    }
-
-    if (servo3Val != servo3Last) {
-        servo3Last = servo3Val;
-        servoMsg = new ROSLIB.Message({
-            data: servo3Val
-        });
-        servo3Pub.publish(servoMsg);
-    }
-
-}
-
 function systemReboot() {
     systemRebootPub.publish()
 }
@@ -281,11 +183,7 @@ window.onblur = function () {
 
 function shutdown() {
     clearInterval(twistIntervalID);
-    clearInterval(servoIntervalID);
     cmdVelPub.unadvertise();
-    servo1Pub.unadvertise();
-    servo2Pub.unadvertise();
-    servo3Pub.unadvertise();
     systemRebootPub.unadvertise();
     systemShutdownPub.unadvertise();
     batterySub.unsubscribe();
@@ -342,12 +240,16 @@ function selectCorrectOption(name) {
     }
 }
 
+function imgWidth() {
+    var element = document.getElementById("video");
+    element.classList.toggle("center-fit-full")
+}
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
 
     initROS();
-    initSliders();
     initTeleopKeyboard();
     createJoystick();
     getVideoTopics();
@@ -358,8 +260,6 @@ window.onload = function () {
     const timeout = setTimeout(defaultVideoSrc, 3000);
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
-
-    servoIntervalID = setInterval(() => publishServos(), 100); // 10 hz
 
     window.addEventListener("beforeunload", () => shutdown());
 }

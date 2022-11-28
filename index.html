@@ -15,8 +15,8 @@
 		<title>LeoRover</title>
 
 		<!-- icons -->
-		<link rel="shortcut icon" href="./img/logo.jpg">
-		<link rel="apple-touch-icon-precomposed" href="./img/logo.jpg">
+		<link rel="shortcut icon" href="./img/LogoLeo_mini.png">
+		<link rel="apple-touch-icon-precomposed" href="./img/LogoLeo_mini.png">
 		<link rel="manifest" href="./manifest.webmanifest">
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/style.css" />
@@ -30,7 +30,6 @@
 		<script src="./js/nipplejs.js"></script>
 		<script src="./js/leo.js"></script>
 		<script src="./js/fullscreen.js"></script>
-		<script src="./js/servoblock.js"></script>
 	</head>
 
 	<body class="bg-custom">
@@ -38,12 +37,12 @@
 	<nav class="navbar navbar-expand-md bg-bar navbar-dark">
 		<div class="container-fluid">
 
-			<div class="col-2 navbar-brand" href="#">
-				<img class="rounded" src="./img/logoLeo.png" alt="Logo" style="width: 70px; height: 40px;"/>
+			<div class="col-3 navbar-brand" href="#">
+				<img class="rounded" src="./img/LogoLeo.png" alt="Logo" style="width: 130px; height: 40px;"/>
 			</div>
 
-			<div class="col-3" >
-				<div id="batteryID" class="center-fit" style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
+			<div class="col-2" >
+				<div id="batteryID" class="mx-auto" style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
 			</div>
 
 			<div class="col-2 text-center">
@@ -52,76 +51,40 @@
 				</button>
 			</div>
 
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+			<button class="col-2 navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
-			<div class="col collapse navbar-collapse mx-auto" id="collapsibleNavbar">
-				<ul class="navbar-nav flex-row ml-md-auto">
-				<li class="nav-item mx-auto col-auto">
+			<div class="col-5 collapse navbar-collapse justify-content-end ml-auto px-0" id="collapsibleNavbar">
+				<ul class="navbar-nav flex-row ml-md-auto w-auto custom-font-size padd">
+				<li class="nav-item mx-0 px-1 my-auto col-auto">
 					<p id="select -label" style="color:aliceblue; text-align: start; margin-bottom: 0%;">Camera stream:</p>
 					<select name="camera" id="camera-select" onchange="changeVideoSrc();"></select>
 				</li>
-				<li class="nav-item mx-auto col-auto">
+				<li class="nav-item mx-0 px-1 my-auto col-auto">
+					<button id="imgBtn" class="btn btn-dark image-btn btn-sm custom-btn mt-2 mx-auto" type="button" onclick="imgWidth()">Stream</button>
+				</li>
+				<li class="nav-item mx-0 px-1 my-auto col-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 mx-auto" onclick="systemReboot()">Reboot</button>
 				</li>
-				<li class="nav-item mx-auto col-auto">
+				<li class="nav-item mx-0 px-1 my-auto col-auto">
 					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 mx-auto" onclick="turnOff()">Turn off</button>
 				</li>
 				</ul>
 			</div>
 
 		</div>
-	</nav> 
+	</nav>
 
-	<div class="row md-6 fixed-bottom">
-		<div class="col my-2 d-none d-md-block">
-			<div id="servoB" class=" rounded bg-servo" style=" width: 250px; height: 200px; display: none;" >
-
-				<div class="row">
-					<div class="col-md-2 ml-1 mt-2">
-						<label for="lin-slider">
-							<strong class="text-light">Servo1</strong>
-						</label>
-						<input id="s1-slider" type="text"/>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-2 ml-1">
-						<label for="lin-slider">
-							<strong class="text-light">Servo2</strong>
-						</label>
-						<input id="s2-slider" type="text"/>
-					</div>
-				</div>
-				
-				<div class="row center ml-1">
-					<div class="col-md-2">
-						<label for="lin-slider">
-							<strong class="text-light">Servo3</strong>
-						</label>
-						<input id="s3-slider" type="text"/>
-					</div>	
-				</div>
-
-			</div>
+	<div class="row fixed-bottom">
+		<div class="col my-2 d-flex ml-auto" style="height: 210px;">
+			<div id="joystick"></div>
 		</div>
-
-		<div class="row my-2 align-self-end mr-auto d-none d-md-block">
-				<button id="servoBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="servoHide()">Show servos</button>
-		</div>
-
-		<div class="col my-2 d-flex" style="height: 210px;">
-				<div id="joystick"></div>
-		</div>
-		
 	</div>
 
-	<div class="justify-content-center" style="margin-top: -70px; min-width: 100%; min-height: 100%; ">
-		<img src="" class="p-1 center-fit" alt="" id="video" style="background-size: cover"></img>
+	<div class="justify-content-center">
+		<img src="" class="center-fit" alt="" id="video"></img>
 	<div>
-	
 	</body>
 
 </html>
