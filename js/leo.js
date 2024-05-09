@@ -22,7 +22,7 @@ var intervalFlag = false;
 var initROSinterval;
 var last_selection;
 
-var currentOptions = [];
+var currentOptions = ["None"];
 
 function initROS() {
 
@@ -132,7 +132,7 @@ function initROS() {
                 last_selection = select.options[select.selectedIndex].text;
             }
             select.innerHTML = '';
-            currentOptions = [];
+            currentOptions = ["None"];
         }
     });
 }
@@ -238,7 +238,7 @@ function defaultVideoSrc() {
     if(typeof robot_namespace == 'undefined') {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
         video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 3000);
+        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 1000);
     }
 }
 
@@ -264,6 +264,9 @@ function checkPublishers(topicName) {
 
 function getVideoTopics() {
     var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/CompressedImage"});
+    var empty_opt = document.createElement('option');
+    empty_opt.innerHTML = "None";
+    select.appendChild(empty_opt);
 
     topicsForTypeClient.callService(request, function(result) {
 	    var topics = result.topics;
@@ -275,8 +278,11 @@ function getVideoTopics() {
 }
 
 function changeVideoSrc() {
-    var selected = select.selectedIndex;
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + select.options[selected].text + "&type=ros_compressed";
+    var selected = select.options[select.selectedIndex].text;
+    if (selected == "None")
+        video.src = "";
+    else
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + selected + "&type=ros_compressed";
 }
 
 function selectCorrectOption(name) {
@@ -294,8 +300,12 @@ function imgWidth() {
 }
 
 function retrieveVideoSrc() {
-    video.src = ""
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+    if (last_selection != "None") {
+        video.src = ""
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+    } else {
+        select.selectedIndex = 0;
+    }
 }
 
 window.onload = function () {
