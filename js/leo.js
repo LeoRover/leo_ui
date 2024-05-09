@@ -18,6 +18,12 @@ var topicsForTypeClient;
 
 var select;
 
+var intervalFlag = false;
+var initROSinterval;
+var last_selection;
+
+var currentOptions = [];
+
 function initROS() {
 
     ros = new ROSLIB.Ros({
@@ -97,6 +103,38 @@ function initROS() {
         serviceType : '/rosapi/TopicsForType'
     });
     
+
+    ros.on('connection', function() {
+        console.log('Connected to websocket server.');
+        getVideoTopics();
+        
+        if(intervalFlag) {
+            clearInterval(initROSinterval)
+            intervalFlag = false;
+            retrieveVideoSrc();
+        }
+
+        if(typeof last_selection == 'undefined') {
+            const timeout = setTimeout(defaultVideoSrc, 2000);
+        }
+    });
+    
+    ros.on('error', function(error) {
+        console.error('Error connecting to websocket server: ', error);
+    });
+    
+    ros.on('close', function() {
+        console.log('Connection to websocket server closed.');
+        if(intervalFlag == false) {
+            initROSinterval = setInterval(initROS, 5000);
+            intervalFlag = true;
+            if(select.selectedIndex != -1) {
+                last_selection = select.options[select.selectedIndex].text;
+            }
+            select.innerHTML = '';
+            currentOptions = [];
+        }
+    });
 }
 
 function createJoystick() {
@@ -158,8 +196,12 @@ function batteryCallback(message) {
 
 function namespaceCallback(message) {
     robot_namespace = message.data;
-    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
-    const timeout = setTimeout(function () {selectCorrectOption(robot_namespace + "camera/image_raw");}, 3000);
+    if (typeof last_selection == 'undefined') {
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
+        const timeout = setTimeout(function () {selectCorrectOption(robot_namespace + "camera/image_raw");}, 3000);
+    } else {
+        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+    }
 }
 
 
@@ -208,8 +250,14 @@ function checkPublishers(topicName) {
 
         if(publishers.length != 0 && topicName.endsWith("/compressed")) {
             var opt = document.createElement('option'); 
-            opt.innerHTML = topicName.slice(0,-11);
-            select.appendChild(opt);
+            var name = topicName.slice(0,-11);
+            opt.innerHTML = name;
+            if(!currentOptions.includes(name)) {
+                select.appendChild(opt);
+                currentOptions.push(name);
+                if (name == last_selection)
+                    select.selectedIndex = currentOptions.length -1;
+            }
         }
     });
 }
@@ -245,6 +293,11 @@ function imgWidth() {
     element.classList.toggle("center-fit-full")
 }
 
+function retrieveVideoSrc() {
+    video.src = ""
+    video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+}
+
 window.onload = function () {
 
     robot_hostname = location.hostname;
@@ -252,12 +305,9 @@ window.onload = function () {
     initROS();
     initTeleopKeyboard();
     createJoystick();
-    getVideoTopics();
 
     video = document.getElementById('video');
     select = document.getElementById('camera-select');
-
-    const timeout = setTimeout(defaultVideoSrc, 3000);
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
