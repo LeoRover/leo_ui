@@ -5,13 +5,13 @@ var batterySub;
 var batterySub1;
 var cmdVelPub;
 var twistIntervalID;
-var robot_hostname;
+var robotHostname;
 
-var max_linear_speed = 0.5;
-var max_angular_speed = 1.2;
+var maxLinearSpeed = 0.5;
+var maxAngularSpeed = 1.2;
 
 var namespaceSub;
-var robot_namespace;
+var robotNamespace;
 
 var publishersClient;
 var topicsForTypeClient;
@@ -20,14 +20,14 @@ var select;
 
 var intervalFlag = false;
 var initROSinterval;
-var last_selection;
+var lastSelection;
 
 var currentOptions = ["None"];
 
 function initROS() {
 
     ros = new ROSLIB.Ros({
-        url: "ws://" + robot_hostname + ":9090"
+        url: "ws://" + robotHostname + ":9090"
     });
 
     // Init message with zero values.
@@ -114,7 +114,7 @@ function initROS() {
             retrieveVideoSrc();
         }
 
-        if(typeof last_selection == 'undefined') {
+        if(typeof lastSelection == 'undefined') {
             const timeout = setTimeout(defaultVideoSrc, 2000);
         }
     });
@@ -129,7 +129,7 @@ function initROS() {
             initROSinterval = setInterval(initROS, 5000);
             intervalFlag = true;
             if(select.selectedIndex != -1) {
-                last_selection = select.options[select.selectedIndex].text;
+                lastSelection = select.options[select.selectedIndex].text;
             }
             select.innerHTML = '';
             currentOptions = ["None"];
@@ -155,8 +155,8 @@ function createJoystick() {
         var lin = Math.sin(nipple.angle.radian) * nipple.distance * 0.01;
         var ang = -Math.cos(nipple.angle.radian) * nipple.distance * 0.01;
 
-        twist.linear.x = lin * max_linear_speed;
-        twist.angular.z = ang * max_angular_speed;
+        twist.linear.x = lin * maxLinearSpeed;
+        twist.angular.z = ang * maxAngularSpeed;
     });
 
     manager.on('end', function () {
@@ -174,13 +174,13 @@ function initTeleopKeyboard() {
     var body = document.getElementsByTagName('body')[0];
     body.addEventListener('keydown', function (e) {
         if (left_keys.includes(e.key))
-            twist.angular.z = max_angular_speed;
+            twist.angular.z = maxAngularSpeed;
         else if (right_keys.includes(e.key))
-            twist.angular.z = -max_angular_speed;
+            twist.angular.z = -maxAngularSpeed;
         else if (up_keys.includes(e.key))
-            twist.linear.x = max_linear_speed;
+            twist.linear.x = maxLinearSpeed;
         else if (down_keys.includes(e.key))
-            twist.linear.x = -max_linear_speed;
+            twist.linear.x = -maxLinearSpeed;
     });
     body.addEventListener('keyup', function (e) {
         if (left_keys.includes(e.key) || right_keys.includes(e.key))
@@ -195,12 +195,12 @@ function batteryCallback(message) {
 }
 
 function namespaceCallback(message) {
-    robot_namespace = message.data;
-    if (typeof last_selection == 'undefined') {
-        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + robot_namespace + "camera/image_raw&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption(robot_namespace + "camera/image_raw");}, 3000);
+    robotNamespace = message.data;
+    if (typeof lastSelection == 'undefined') {
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + robotNamespace + "camera/image_raw&type=ros_compressed";
+        const timeout = setTimeout(function () {selectCorrectOption(robotNamespace + "camera/image_raw");}, 3000);
     } else {
-        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + lastSelection + "&type=ros_compressed";
     }
 }
 
@@ -235,9 +235,9 @@ function shutdown() {
 function defaultVideoSrc() {
     namespaceSub.unsubscribe();
     
-    if(typeof robot_namespace == 'undefined') {
+    if(typeof robotNamespace == 'undefined') {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
-        video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+        video.src = "http://" + robotHostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
         const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 1000);
     }
 }
@@ -255,7 +255,7 @@ function checkPublishers(topicName) {
             if(!currentOptions.includes(name)) {
                 select.appendChild(opt);
                 currentOptions.push(name);
-                if (name == last_selection)
+                if (name == lastSelection)
                     select.selectedIndex = currentOptions.length -1;
             }
         }
@@ -282,7 +282,7 @@ function changeVideoSrc() {
     if (selected == "None")
         video.src = "";
     else
-        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + selected + "&type=ros_compressed";
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + selected + "&type=ros_compressed";
 }
 
 function selectCorrectOption(name) {
@@ -300,9 +300,9 @@ function imgWidth() {
 }
 
 function retrieveVideoSrc() {
-    if (last_selection != "None") {
+    if (lastSelection != "None") {
         video.src = ""
-        video.src = "http://" + robot_hostname + ":8080/stream?topic=" + last_selection + "&type=ros_compressed";
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + lastSelection + "&type=ros_compressed";
     } else {
         select.selectedIndex = 0;
     }
@@ -310,7 +310,7 @@ function retrieveVideoSrc() {
 
 window.onload = function () {
 
-    robot_hostname = location.hostname;
+    robotHostname = location.hostname;
 
     video = document.getElementById('video');
     select = document.getElementById('camera-select');
