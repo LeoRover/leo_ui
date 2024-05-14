@@ -312,12 +312,12 @@ window.onload = function () {
 
     robot_hostname = location.hostname;
 
+    video = document.getElementById('video');
+    select = document.getElementById('camera-select');
+
     initROS();
     initTeleopKeyboard();
     createJoystick();
-
-    video = document.getElementById('video');
-    select = document.getElementById('camera-select');
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
