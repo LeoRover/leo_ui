@@ -197,8 +197,8 @@ function batteryCallback(message) {
 function namespaceCallback(message) {
     robotNamespace = message.data;
     if (typeof lastSelection == 'undefined') {
-        video.src = "http://" + robotHostname + ":8080/stream?topic=" + robotNamespace + "camera/image_raw&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption(robotNamespace + "camera/image_raw");}, 3000);
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + robotNamespace + "camera/image_color&type=ros_compressed";
+        const timeout = setTimeout(function () {selectCorrectOption(robotNamespace + "camera/image_color");}, 3000);
     } else {
         video.src = "http://" + robotHostname + ":8080/stream?topic=" + lastSelection + "&type=ros_compressed";
     }
@@ -237,8 +237,8 @@ function defaultVideoSrc() {
     
     if(typeof robotNamespace == 'undefined') {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
-        video.src = "http://" + robotHostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_raw"); }, 1000);
+        video.src = "http://" + robotHostname + ":8080/stream?topic=/camera/image_color&type=ros_compressed";
+        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_color"); }, 3000);
     }
 }
 
@@ -263,7 +263,7 @@ function checkPublishers(topicName) {
 }
 
 function getVideoTopics() {
-    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/CompressedImage"});
+    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/msg/CompressedImage"});
     var empty_opt = document.createElement('option');
     empty_opt.innerHTML = "None";
     select.appendChild(empty_opt);
