@@ -53,20 +53,6 @@ function initROS() {
 
     cmdVelPub.advertise();
 
-    systemRebootPub = new ROSLIB.Topic({
-        ros: ros,
-        name: 'system/reboot',
-        messageType: 'std_msgs/Empty'
-    });
-    systemRebootPub.advertise();
-
-    systemShutdownPub = new ROSLIB.Topic({
-        ros: ros,
-        name: 'system/shutdown',
-        messageType: 'std_msgs/Empty'
-    });
-    systemShutdownPub.advertise();
-
     batterySub = new ROSLIB.Topic({
         ros: ros,
         name: 'battery',
@@ -102,7 +88,18 @@ function initROS() {
         name : '/rosapi/topics_for_type',
         serviceType : '/rosapi/TopicsForType'
     });
-    
+
+    systemRebootService = new ROSLIB.Service({
+        ros: ros,
+        name: 'system/reboot',
+        serviceType: 'std_srvs/Trigger'
+    });
+
+    systemShutdownService = new ROSLIB.Service({
+        ros: ros,
+        name: 'system/shutdown',
+        serviceType: 'std_srvs/Trigger'
+    });
 
     ros.on('connection', function() {
         console.log('Connected to websocket server.');
@@ -210,11 +207,27 @@ function publishTwist() {
 }
 
 function systemReboot() {
-    systemRebootPub.publish()
+    systemRebootService.callService(new ROSLIB.ServiceRequest(),
+        function (result) {
+            if (result.success) {
+                console.log(result.message);
+            } else {
+                console.error("Failed to request system reboot: " + result.message);
+            }
+        }
+    );
 }
 
-function turnOff() {
-    systemShutdownPub.publish()
+function systemShutdown() {
+    systemShutdownService.callService(new ROSLIB.ServiceRequest(),
+        function (result) {
+            if (result.success) {
+                console.log(result.message);
+            } else {
+                console.error("Failed to request system shutdown: " + result.message);
+            }
+        }
+    );
 }
 
 window.onblur = function () {
@@ -226,8 +239,6 @@ window.onblur = function () {
 function shutdown() {
     clearInterval(twistIntervalID);
     cmdVelPub.unadvertise();
-    systemRebootPub.unadvertise();
-    systemShutdownPub.unadvertise();
     batterySub.unsubscribe();
     ros.close();
 }
