@@ -62,7 +62,7 @@ function initROS() {
 
     batterySub1 = new ROSLIB.Topic({
         ros: ros,
-        name: 'firmware/battery',
+        name: 'firmware/battery_averaged',
         messageType: 'std_msgs/Float32',
         queue_length: 1
     });
