@@ -11,7 +11,7 @@ var maxLinearSpeed = 0.5;
 var maxAngularSpeed = 1.2;
 
 var namespaceSub;
-var robotNamespace;
+var robotNamespace = null;
 
 var publishersClient;
 var topicsForTypeClient;
@@ -20,9 +20,8 @@ var select;
 
 var intervalFlag = false;
 var initROSinterval;
-var lastSelection;
 
-var currentOptions = ["None"];
+var selectedOption = null;
 
 function initROS() {
 
@@ -103,16 +102,19 @@ function initROS() {
 
     ros.on('connection', function() {
         console.log('Connected to websocket server.');
-        getVideoTopics();
         
         if(intervalFlag) {
             clearInterval(initROSinterval)
             intervalFlag = false;
-            retrieveVideoSrc();
+            resetVideoSrc();
         }
 
-        if(typeof lastSelection == 'undefined') {
-            const timeout = setTimeout(defaultVideoSrc, 2000);
+        // Refresh video topics now and every 5 seconds
+        refreshVideoSelect();
+        videoTopicsIntervalID = setInterval(refreshVideoSelect, 5000);
+
+        if(selectedOption == null) {
+            setTimeout(defaultVideoSrc, 2000);
         }
     });
     
@@ -122,14 +124,11 @@ function initROS() {
     
     ros.on('close', function() {
         console.log('Connection to websocket server closed.');
+        clearInterval(videoTopicsIntervalID);
         if(intervalFlag == false) {
             initROSinterval = setInterval(initROS, 5000);
             intervalFlag = true;
-            if(select.selectedIndex != -1) {
-                lastSelection = select.options[select.selectedIndex].text;
-            }
             select.innerHTML = '';
-            currentOptions = ["None"];
         }
     });
 }
@@ -193,14 +192,29 @@ function batteryCallback(message) {
 
 function namespaceCallback(message) {
     robotNamespace = message.data;
-    if (typeof lastSelection == 'undefined') {
-        video.src = "http://" + robotHostname + ":8080/stream?topic=" + robotNamespace + "camera/image_color&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption(robotNamespace + "camera/image_color");}, 3000);
-    } else {
-        video.src = "http://" + robotHostname + ":8080/stream?topic=" + lastSelection + "&type=ros_compressed";
+
+    if (selectedOption == null) {
+        setSelectedVideoSrc(robotNamespace + "camera/image_color");
+        selectCorrectOption();
     }
 }
 
+function defaultVideoSrc() {
+    if(robotNamespace == null) {
+        console.log("Unable to get the robot namespace. Assuming it's '/'.");
+        setSelectedVideoSrc("/camera/image_color");
+        selectCorrectOption();
+    }
+}
+
+function setSelectedVideoSrc(option) {
+    selectedOption = option;
+    if (option == "None") {
+        video.src = "";
+    } else {
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + option + "&type=ros_compressed";
+    }
+}
 
 function publishTwist() {
     cmdVelPub.publish(twist);
@@ -238,67 +252,97 @@ window.onblur = function () {
 
 function shutdown() {
     clearInterval(twistIntervalID);
+    clearInterval(videoTopicsIntervalID);
     cmdVelPub.unadvertise();
     batterySub.unsubscribe();
     ros.close();
 }
 
-function defaultVideoSrc() {
-    namespaceSub.unsubscribe();
-    
-    if(typeof robotNamespace == 'undefined') {
-        console.log("Unable to get the robot namespace. Assuming it's '/'.");
-        video.src = "http://" + robotHostname + ":8080/stream?topic=/camera/image_color&type=ros_compressed";
-        const timeout = setTimeout(function () {selectCorrectOption("/camera/image_color"); }, 3000);
-    }
+function createEmptySelectElement() {
+    var tempSelect = document.createElement('select');
+    var empty_opt = document.createElement('option');
+    empty_opt.innerHTML = "None";
+    tempSelect.appendChild(empty_opt);
+    return tempSelect;
 }
 
-function checkPublishers(topicName) {
-    var request = new ROSLIB.ServiceRequest({topic : topicName});
+function buildSortedSelect(finalOptions) {
+    var tempSelect = document.createElement('select');
+    for(var j = 0; j < finalOptions.length; j++) {
+        var opt = document.createElement('option');
+        opt.innerHTML = finalOptions[j];
+        tempSelect.appendChild(opt);
+    }
+    return tempSelect;
+}
 
+function checkTopicPublishers(topicName, tempOptions, pendingRequests, callback) {
+    var request = new ROSLIB.ServiceRequest({topic : topicName});
     publishersClient.callService(request, function(result) {
-	    var publishers = result.publishers;
+        var publishers = result.publishers;
 
         if(publishers.length != 0 && topicName.endsWith("/compressed")) {
-            var opt = document.createElement('option'); 
             var name = topicName.slice(0,-11);
-            opt.innerHTML = name;
-            if(!currentOptions.includes(name)) {
-                select.appendChild(opt);
-                currentOptions.push(name);
-                if (name == lastSelection)
-                    select.selectedIndex = currentOptions.length -1;
+            if(!tempOptions.includes(name)) {
+                tempOptions.push(name);
             }
+        }
+        
+        pendingRequests.count--;
+        if (pendingRequests.count === 0) {
+            callback(tempOptions);
         }
     });
 }
 
-function getVideoTopics() {
+function updateSelectOptions(tempOptions) {
+    // Sort options (except "None" which stays first)
+    var sortedOptions = tempOptions.slice(1).sort();
+    var finalOptions = ["None"].concat(sortedOptions);
+    
+    // Rebuild select with sorted options
+    var tempSelect = buildSortedSelect(finalOptions);
+    
+    // Replace current options atomically when all requests complete
+    select.innerHTML = tempSelect.innerHTML;
+    selectCorrectOption();
+}
+
+function refreshVideoSelect() {
+    var tempOptions = ["None"];
+
     var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/msg/CompressedImage"});
-    var empty_opt = document.createElement('option');
-    empty_opt.innerHTML = "None";
-    select.appendChild(empty_opt);
-
     topicsForTypeClient.callService(request, function(result) {
-	    var topics = result.topics;
+        var topics = result.topics;
+        var pendingRequests = {count: topics.length};
+        
+        if (pendingRequests.count === 0) {
+            // Replace current options atomically
+            var tempSelect = createEmptySelectElement();
+            select.innerHTML = tempSelect.innerHTML;
+            selectCorrectOption();
+            return;
+        }
 
-	    for(var i = 0; i < topics.length; i++) {
-	        checkPublishers(topics[i]);
-	    }
+        for(var i = 0; i < topics.length; i++) {
+            (function(topicName) {
+                checkTopicPublishers(topicName, tempOptions, pendingRequests, updateSelectOptions);
+            })(topics[i]);
+        }
     });
 }
 
-function changeVideoSrc() {
-    var selected = select.options[select.selectedIndex].text;
-    if (selected == "None")
-        video.src = "";
-    else
-        video.src = "http://" + robotHostname + ":8080/stream?topic=" + selected + "&type=ros_compressed";
+function selectOnChangeCallback() {
+    setSelectedVideoSrc(select.options[select.selectedIndex].text);
 }
 
-function selectCorrectOption(name) {
+function selectCorrectOption() {
+    if (selectedOption == null) {
+        return;
+    }
+
     for(var i = 0; i < select.options.length; i++) {
-        if(select.options[i].text == name) {
+        if(select.options[i].text == selectedOption) {
             select.selectedIndex = i;
             break;
         }
@@ -310,12 +354,11 @@ function imgWidth() {
     element.classList.toggle("center-fit-full")
 }
 
-function retrieveVideoSrc() {
-    if (lastSelection != "None") {
-        video.src = ""
-        video.src = "http://" + robotHostname + ":8080/stream?topic=" + lastSelection + "&type=ros_compressed";
-    } else {
-        select.selectedIndex = 0;
+function resetVideoSrc() {
+    // Reset the video source to force reload
+    video.src = ""
+    if (selectedOption != "None") {
+        video.src = "http://" + robotHostname + ":8080/stream?topic=" + selectedOption + "&type=ros_compressed";
     }
 }
 
