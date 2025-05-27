@@ -1,51 +1,55 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no, shrink-to-fit=no">
-		<meta name="application-name" content="LeoRover UI">
-		<meta name="apple-mobile-web-app-title" content="LeoRover UI">
-		<meta name="theme-color" content="#000000">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-capable" content="yes">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+	<meta name="application-name" content="LeoRover UI">
+	<meta name="apple-mobile-web-app-title" content="LeoRover UI">
+	<meta name="theme-color" content="#000000">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
 
-		<title>LeoRover</title>
+	<title>LeoRover</title>
 
-		<!-- icons -->
-		<link rel="shortcut icon" href="./img/LogoLeo_mini.png">
-		<link rel="apple-touch-icon-precomposed" href="./img/LogoLeo_mini.png">
-		<link rel="manifest" href="./manifest.webmanifest">
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="stylesheet" href="css/font.css" />
+	<!-- icons -->
+	<link rel="shortcut icon" href="./img/LogoLeo_mini.png">
+	<link rel="apple-touch-icon-precomposed" href="./img/LogoLeo_mini.png">
+	<link rel="manifest" href="./manifest.webmanifest">
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/font.css" />
 
-		<script src="./js/jquery.min.js"></script>
-		<script src="./js/bootstrap.min.js"></script>
-		<script src="./js/roslib.min.js"></script>
-		<script src="./js/nipplejs.js"></script>
-		<script src="./js/leo.js"></script>
-		<script src="./js/fullscreen.js"></script>
-	</head>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/roslib.min.js"></script>
+	<script src="./js/nipplejs.js"></script>
+	<script src="./js/leo.js"></script>
+	<script src="./js/fullscreen.js"></script>
+</head>
 
-	<body class="bg-custom">
+<body class="bg-custom">
 
 	<nav class="navbar navbar-expand-md bg-bar navbar-dark">
 		<div class="container-fluid">
 
 			<div class="col-3 navbar-brand" href="#">
-				<img class="rounded" src="./img/LogoLeo.png" alt="Logo" style="width: 130px; height: 40px;"/>
+				<img class="rounded" src="./img/LogoLeo.png" alt="Logo" style="width: 130px; height: 40px;" />
 			</div>
 
-			<div class="col-2" >
-				<div id="batteryID" class="mx-auto" style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
+			<div class="col-2">
+				<div id="batteryID" class="mx-auto"
+					style="width: 70px; height: 40px; color: aliceblue; text-align: center;">Voltage: 0V</div>
 			</div>
 
 			<div class="col-2 text-center">
-				<button class="bg-dark btn-sm mx-auto" style="width: 45px; height: 45px;" type="button" onclick="fullScreen()">
-					<img class="rounded img-fluid" src="img/nav-bar-fullscreen.svg" alt="FullScreen" style="width: 25px; height: 25px;"/>
+				<button class="bg-dark btn-sm mx-auto" style="width: 45px; height: 45px;" type="button"
+					onclick="fullScreen()">
+					<img class="rounded img-fluid" src="img/nav-bar-fullscreen.svg" alt="FullScreen"
+						style="width: 25px; height: 25px;" />
 				</button>
 			</div>
 
@@ -55,19 +59,23 @@
 
 			<div class="col-5 collapse navbar-collapse justify-content-end ml-auto px-0" id="collapsibleNavbar">
 				<ul class="navbar-nav flex-row ml-md-auto w-auto custom-font-size padd">
-				<li class="nav-item mx-0 px-1 my-auto col-auto">
-					<p id="select -label" style="color:aliceblue; text-align: start; margin-bottom: 0%;">Camera stream:</p>
-					<select name="camera" id="camera-select" onchange="selectOnChangeCallback();"></select>
-				</li>
-				<li class="nav-item mx-0 px-1 my-auto col-auto">
-					<button id="imgBtn" class="btn btn-dark image-btn btn-sm custom-btn mt-2 mx-auto" type="button" onclick="imgWidth()">Stream</button>
-				</li>
-				<li class="nav-item mx-0 px-1 my-auto col-auto">
-					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 mx-auto" onclick="systemReboot()">Reboot</button>
-				</li>
-				<li class="nav-item mx-0 px-1 my-auto col-auto">
-					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 mx-auto" onclick="systemShutdown()">Turn off</button>
-				</li>
+					<li class="nav-item mx-0 px-1 my-auto col-auto">
+						<p id="select -label" style="color:aliceblue; text-align: start; margin-bottom: 0%;">Camera
+							stream:</p>
+						<select name="camera" id="camera-select" onchange="selectOnChangeCallback();"></select>
+					</li>
+					<li class="nav-item mx-0 px-1 my-auto col-auto">
+						<button id="imgBtn" class="btn btn-dark image-btn btn-sm custom-btn mt-2 mx-auto" type="button"
+							onclick="imgWidth()">Stream</button>
+					</li>
+					<li class="nav-item mx-0 px-1 my-auto col-auto">
+						<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 mx-auto"
+							onclick="systemReboot()">Reboot</button>
+					</li>
+					<li class="nav-item mx-0 px-1 my-auto col-auto">
+						<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 mx-auto"
+							onclick="systemShutdown()">Turn off</button>
+					</li>
 				</ul>
 			</div>
 
@@ -82,7 +90,7 @@
 
 	<div class="justify-content-center">
 		<img src="" class="center-fit" alt="" id="video"></img>
-	<div>
-	</body>
+		<div>
+</body>
 
 </html>

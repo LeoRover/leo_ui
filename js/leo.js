@@ -77,15 +77,15 @@ function initROS() {
     namespaceSub.subscribe(namespaceCallback);
 
     publishersClient = new ROSLIB.Service({
-        ros : ros,
-        name : '/rosapi/publishers',
-        serviceType : '/rosapi/Publishers'
+        ros: ros,
+        name: '/rosapi/publishers',
+        serviceType: '/rosapi/Publishers'
     });
-    
+
     topicsForTypeClient = new ROSLIB.Service({
-        ros : ros,
-        name : '/rosapi/topics_for_type',
-        serviceType : '/rosapi/TopicsForType'
+        ros: ros,
+        name: '/rosapi/topics_for_type',
+        serviceType: '/rosapi/TopicsForType'
     });
 
     systemRebootService = new ROSLIB.Service({
@@ -100,10 +100,10 @@ function initROS() {
         serviceType: 'std_srvs/Trigger'
     });
 
-    ros.on('connection', function() {
+    ros.on('connection', function () {
         console.log('Connected to websocket server.');
-        
-        if(intervalFlag) {
+
+        if (intervalFlag) {
             clearInterval(initROSinterval)
             intervalFlag = false;
             resetVideoSrc();
@@ -113,19 +113,19 @@ function initROS() {
         refreshVideoSelect();
         videoTopicsIntervalID = setInterval(refreshVideoSelect, 5000);
 
-        if(selectedOption == null) {
+        if (selectedOption == null) {
             setTimeout(defaultVideoSrc, 2000);
         }
     });
-    
-    ros.on('error', function(error) {
+
+    ros.on('error', function (error) {
         console.error('Error connecting to websocket server: ', error);
     });
-    
-    ros.on('close', function() {
+
+    ros.on('close', function () {
         console.log('Connection to websocket server closed.');
         clearInterval(videoTopicsIntervalID);
-        if(intervalFlag == false) {
+        if (intervalFlag == false) {
             initROSinterval = setInterval(initROS, 5000);
             intervalFlag = true;
             select.innerHTML = '';
@@ -200,7 +200,7 @@ function namespaceCallback(message) {
 }
 
 function defaultVideoSrc() {
-    if(robotNamespace == null) {
+    if (robotNamespace == null) {
         console.log("Unable to get the robot namespace. Assuming it's '/'.");
         setSelectedVideoSrc("/camera/image_color");
         selectCorrectOption();
@@ -268,7 +268,7 @@ function createEmptySelectElement() {
 
 function buildSortedSelect(finalOptions) {
     var tempSelect = document.createElement('select');
-    for(var j = 0; j < finalOptions.length; j++) {
+    for (var j = 0; j < finalOptions.length; j++) {
         var opt = document.createElement('option');
         opt.innerHTML = finalOptions[j];
         tempSelect.appendChild(opt);
@@ -277,17 +277,17 @@ function buildSortedSelect(finalOptions) {
 }
 
 function checkTopicPublishers(topicName, tempOptions, pendingRequests, callback) {
-    var request = new ROSLIB.ServiceRequest({topic : topicName});
-    publishersClient.callService(request, function(result) {
+    var request = new ROSLIB.ServiceRequest({ topic: topicName });
+    publishersClient.callService(request, function (result) {
         var publishers = result.publishers;
 
-        if(publishers.length != 0 && topicName.endsWith("/compressed")) {
-            var name = topicName.slice(0,-11);
-            if(!tempOptions.includes(name)) {
+        if (publishers.length != 0 && topicName.endsWith("/compressed")) {
+            var name = topicName.slice(0, -11);
+            if (!tempOptions.includes(name)) {
                 tempOptions.push(name);
             }
         }
-        
+
         pendingRequests.count--;
         if (pendingRequests.count === 0) {
             callback(tempOptions);
@@ -299,10 +299,10 @@ function updateSelectOptions(tempOptions) {
     // Sort options (except "None" which stays first)
     var sortedOptions = tempOptions.slice(1).sort();
     var finalOptions = ["None"].concat(sortedOptions);
-    
+
     // Rebuild select with sorted options
     var tempSelect = buildSortedSelect(finalOptions);
-    
+
     // Replace current options atomically when all requests complete
     select.innerHTML = tempSelect.innerHTML;
     selectCorrectOption();
@@ -311,11 +311,11 @@ function updateSelectOptions(tempOptions) {
 function refreshVideoSelect() {
     var tempOptions = ["None"];
 
-    var request = new ROSLIB.ServiceRequest({type : "sensor_msgs/msg/CompressedImage"});
-    topicsForTypeClient.callService(request, function(result) {
+    var request = new ROSLIB.ServiceRequest({ type: "sensor_msgs/msg/CompressedImage" });
+    topicsForTypeClient.callService(request, function (result) {
         var topics = result.topics;
-        var pendingRequests = {count: topics.length};
-        
+        var pendingRequests = { count: topics.length };
+
         if (pendingRequests.count === 0) {
             // Replace current options atomically
             var tempSelect = createEmptySelectElement();
@@ -324,8 +324,8 @@ function refreshVideoSelect() {
             return;
         }
 
-        for(var i = 0; i < topics.length; i++) {
-            (function(topicName) {
+        for (var i = 0; i < topics.length; i++) {
+            (function (topicName) {
                 checkTopicPublishers(topicName, tempOptions, pendingRequests, updateSelectOptions);
             })(topics[i]);
         }
@@ -341,8 +341,8 @@ function selectCorrectOption() {
         return;
     }
 
-    for(var i = 0; i < select.options.length; i++) {
-        if(select.options[i].text == selectedOption) {
+    for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].text == selectedOption) {
             select.selectedIndex = i;
             break;
         }
