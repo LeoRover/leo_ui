@@ -87,3 +87,26 @@ button.navbar-toggler {
   background-color: #959595 !important;
   margin: auto;
 }
+
+.gamepad-notification {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1050;
+  max-width: min(90vw, 520px);
+  padding: 10px 14px;
+  border: 1px solid #666;
+  border-radius: 6px;
+  background: rgba(24, 24, 24, 0.95);
+  color: #f2f2f2;
+  font-size: 13px;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.gamepad-notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
