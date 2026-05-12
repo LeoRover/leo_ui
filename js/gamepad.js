@@ -55,12 +55,12 @@
         }
 
         var rbPressed = gamepad.buttons && gamepad.buttons[5] && gamepad.buttons[5].pressed;
-        var axisX = gamepad.axes && gamepad.axes.length > 0 ? applyDeadzone(gamepad.axes[0], gamepadDeadzone) : 0;
-        var axisY = gamepad.axes && gamepad.axes.length > 1 ? applyDeadzone(gamepad.axes[1], gamepadDeadzone) : 0;
+        var leftStickY = gamepad.axes && gamepad.axes.length > 1 ? applyDeadzone(gamepad.axes[1], gamepadDeadzone) : 0;
+        var rightStickX = gamepad.axes && gamepad.axes.length > 2 ? applyDeadzone(gamepad.axes[2], gamepadDeadzone) : 0;
 
         if (rbPressed) {
-            twist.linear.x = -axisY * maxLinearSpeed;
-            twist.angular.z = -axisX * maxAngularSpeed;
+            twist.linear.x = -leftStickY * maxLinearSpeed;
+            twist.angular.z = -rightStickX * maxAngularSpeed;
             gamepadWasDriving = true;
         } else if (gamepadWasDriving) {
             twist.linear.x = 0;
@@ -90,7 +90,7 @@
         connectedGamepadIndex = event.gamepad.index;
         gamepadWasDriving = false;
         startGamepadPolling();
-        showGamepadNotification('Gamepad connected - hold RB and use left stick to drive');
+        showGamepadNotification('Gamepad connected - hold RB, left stick for drive, right stick to steer');
     }
 
     function onGamepadDisconnected(event) {
@@ -123,7 +123,7 @@
             if (gamepads[i]) {
                 connectedGamepadIndex = gamepads[i].index;
                 startGamepadPolling();
-                showGamepadNotification('Gamepad ready - hold RB and use left stick to drive');
+                showGamepadNotification('Gamepad ready - hold RB, left stick for drive, right stick to steer');
                 break;
             }
         }
