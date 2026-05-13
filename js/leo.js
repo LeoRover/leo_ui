@@ -253,6 +253,9 @@ window.onblur = function () {
 function shutdown() {
     clearInterval(twistIntervalID);
     clearInterval(videoTopicsIntervalID);
+    if (typeof stopGamepadControl === 'function') {
+        stopGamepadControl();
+    }
     cmdVelPub.unadvertise();
     batterySub.unsubscribe();
     ros.close();
@@ -372,6 +375,10 @@ window.onload = function () {
     initROS();
     initTeleopKeyboard();
     createJoystick();
+
+    if (typeof initGamepadControl === 'function') {
+        initGamepadControl();
+    }
 
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
