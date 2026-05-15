@@ -30,7 +30,7 @@ function initROS() {
     });
 
     // Init message with zero values.
-    twist = new ROSLIB.Message({
+    twist = {
         linear: {
             x: 0,
             y: 0,
@@ -41,7 +41,7 @@ function initROS() {
             y: 0,
             z: 0
         }
-    });
+    };
 
     cmdVelPub = new ROSLIB.Topic({
         ros: ros,
@@ -78,14 +78,14 @@ function initROS() {
 
     publishersClient = new ROSLIB.Service({
         ros: ros,
-        name: '/rosapi/publishers',
-        serviceType: '/rosapi/Publishers'
+        name: 'rosapi/publishers',
+        serviceType: 'rosapi/Publishers'
     });
 
     topicsForTypeClient = new ROSLIB.Service({
         ros: ros,
-        name: '/rosapi/topics_for_type',
-        serviceType: '/rosapi/TopicsForType'
+        name: 'rosapi/topics_for_type',
+        serviceType: 'rosapi/TopicsForType'
     });
 
     systemRebootService = new ROSLIB.Service({
@@ -221,7 +221,7 @@ function publishTwist() {
 }
 
 function systemReboot() {
-    systemRebootService.callService(new ROSLIB.ServiceRequest(),
+    systemRebootService.callService({},
         function (result) {
             if (result.success) {
                 console.log(result.message);
@@ -233,7 +233,7 @@ function systemReboot() {
 }
 
 function systemShutdown() {
-    systemShutdownService.callService(new ROSLIB.ServiceRequest(),
+    systemShutdownService.callService({},
         function (result) {
             if (result.success) {
                 console.log(result.message);
@@ -280,8 +280,7 @@ function buildSortedSelect(finalOptions) {
 }
 
 function checkTopicPublishers(topicName, tempOptions, pendingRequests, callback) {
-    var request = new ROSLIB.ServiceRequest({ topic: topicName });
-    publishersClient.callService(request, function (result) {
+    publishersClient.callService({ topic: topicName }, function (result) {
         var publishers = result.publishers;
 
         if (publishers.length != 0 && topicName.endsWith("/compressed")) {
@@ -314,8 +313,7 @@ function updateSelectOptions(tempOptions) {
 function refreshVideoSelect() {
     var tempOptions = ["None"];
 
-    var request = new ROSLIB.ServiceRequest({ type: "sensor_msgs/msg/CompressedImage" });
-    topicsForTypeClient.callService(request, function (result) {
+    topicsForTypeClient.callService({ type: "sensor_msgs/msg/CompressedImage" }, function (result) {
         var topics = result.topics;
         var pendingRequests = { count: topics.length };
 
